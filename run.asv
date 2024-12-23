@@ -1,0 +1,104 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Main function for performing a series of simulations of plant invasions.
+%   -simulations are performed only using death case 3 and invader types
+%   3, 4, and 8 because these were the only groups for which species 
+%   invasions were successful and therefore saves computation time
+%   -simulations are also only performed using attachment algorithm 1
+%   (random) because results are qualtiatively similar for each algorithm
+%   -simulations are performed over the range of user specified networks 
+%   ranging from 1-1200
+%
+%  Author:
+%   Sabine Dritz: sjdritz@ucdavis.edu
+%
+%  Date:
+%   4/16/2022
+
+%%%%% Updates 12/23/2023 Lincolnshire, IL by Becca Nelson:
+%%% began modification of code for cross-boundary spillover project 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Run a suite of simulations
+
+function [] = run()
+    global network
+
+    % Set directory where .csv files are located
+    network_dir = '/Users/Becca/Desktop/Harrison Lab/crossboundary_spillover';  % Directory with the .csv files
+
+    % Get a list of .csv files in the directory
+    network_files = dir(fullfile(network_dir, '*.csv'));
+
+    function [] = process_csv_files()
+    % Set the directory where the CSV files are located
+    network_dir = '/Users/Becca/Desktop/Harrison Lab/crossboundary_spillover';  % Adjust to your directory
+    network_files = dir(fullfile(network_dir, '*.csv'));  % Get a list of CSV files
+
+   function [] = process_csv_files()
+    % Set the directory where the CSV files are located
+    network_dir = '/Users/Becca/Desktop/Harrison Lab/crossboundary_spillover';  % Adjust to your directory
+    network_files = dir(fullfile(network_dir, '*.csv'));  % Get a list of CSV files
+
+    % Loop through each file
+    for i = 1:length(network_files)
+        % Load the current network CSV file
+        network_file = network_files(i).name;
+        full_file_path = fullfile(network_dir, network_file);
+        
+        % Read the CSV file into a table (assuming your data is structured with columns)
+        data = readtable(full_file_path);  % Use readmatrix for numeric data, readtable for mixed data
+        
+        % Create a list of columns to keep (if they exist)
+        columns_to_keep = {'ASER', 'VIVI', 'CESO', 'MEI'};
+        existing_columns = intersect(columns_to_keep, data.Properties.VariableNames);  % Check which columns exist
+        
+        % 1) Create CSV with only ASER, VIVI, CESO (if they exist)
+        data_aser_vivi_ceso = data(:, existing_columns);  % Keep only the columns that exist
+        writetable(data_aser_vivi_ceso, fullfile(network_dir, sprintf('only_ASER_VIVI_CESO_%s', network_file)));
+
+        % 2) Create CSV with all columns except ASER, VIVI, CESO (if they exist)
+        columns_to_remove = setdiff(data.Properties.VariableNames, existing_columns);  % Remove ASER, VIVI, CESO if they exist
+        data_without_aser_vivi_ceso = data(:, columns_to_remove);  % Keep the other columns
+        writetable(data_without_aser_vivi_ceso, fullfile(network_dir, sprintf('without_ASER_VIVI_CESO_%s', network_file)));
+    end
+end
+
+
+
+    % If no networks were specified, use all of them
+    % (assuming networks refers to the .csv files)
+    networks = 1:length(network_files);  % Using all available .csv files
+
+    % Network range (loop over each .csv file)
+    for network_index = 1:length(networks)
+        % Get the file name of the current network
+        network_file = network_files(networks(network_index)).name;
+        
+        % Load network data from the .csv file
+        network_data = readmatrix(fullfile(network_dir, network_file));  % Adjust this if your .csv format is different
+
+        % Assign the loaded network data to the global variable
+        network = network_data;  % If needed, adjust how you use the data in your simulation
+
+        % Run for mortality situation 3 (low mortality for animals and plants)
+        death_case = 3;
+
+        % Construct a file name for the current network and death case
+        file_name = sprintf('%s_%d', network_file(1:end-4), death_case);  % Remove '.csv' from the file name
+
+        %% Run simulation 
+        [Alpha, P, A] = run_inv_PC(file_name);
+
+        %% Write data to a csv file
+        plant_data = [full(P{1}), full(P{2})];
+        animal_data = [full(A{1}), full(A{2})];
+        alpha_data = [full(Alpha{1}), full(Alpha{2})];                
+
+        % Write output data to csv files
+        writematrix(plant_data, sprintf('data/P_n%04d_m%d.csv', network_index, death_case));
+        writematrix(animal_data, sprintf('data/A_n%04d_m%d.csv', network_index, death_case));
+        writematrix(alpha_data, sprintf('data/Alpha_n%04d_m%d.csv', network_index, death_case));
+    end
+end
+
