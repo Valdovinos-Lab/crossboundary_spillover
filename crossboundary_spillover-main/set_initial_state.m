@@ -11,15 +11,18 @@ mean = 0.5;
 var = 0.1;
 values = uniform_rand(mean, var, (2 * row) + col, 1);
 
-if version_index ==1
-initial_plants = values(1:row);
-else if version_index==2
-        6476
-initial_plants = serpentine_mask.*(values(1:row))
-initial_nectar =serpentine_mask.* values(row + 1:2 * row); 
+if version_index == 1
+    % Version 1: Original
+    initial_plants = values(1:row);
+    initial_nectar = values(row + 1:2 * row);
+elseif version_index == 2
+    % Version 2: Serpentine
+    initial_plants = serpentine_mask .* values(1:row);
+    initial_nectar = serpentine_mask .* values(row + 1:2 * row); 
 else
-initial_plants = non_serp_mask.*(values(1:row));
-initial_nectar = non_serp_mask.*(values(row+1:2 * row));
+    % Version 3: Non-serpentine
+    initial_plants = non_serp_mask .* values(1:row);
+    initial_nectar = non_serp_mask .* values(row + 1:2 * row);
 end
 
 

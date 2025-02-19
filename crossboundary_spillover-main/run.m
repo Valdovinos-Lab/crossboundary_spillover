@@ -8,7 +8,12 @@
 %   -simulations are performed over the range of user specified networks 
 %   ranging from 1-1200
 %
-%%Updated 1/23/2025-Taran..spillover project
+
+
+
+%% Updated 2/19/2025--Becca: fixed typos in set_initial_state.m and ran with all of the networks together 
+% 
+%% Updated 1/23/2025-Taran..spillover project
 
 %%%%% Updates 12/23/2023 Lincolnshire, IL by Becca Nelson:
 %%% began modification of code for cross-boundary spillover project 
@@ -27,9 +32,9 @@ function [] = run()
 mkdir('./data')
 
     % List of network CSV files
-    networks = {'bertha_2022.csv'};  % Use one network as a test 
+    networks = {'Aikawa_2022_summer.csv', "Aikawa_2022.csv", "Aikawa_2024.csv", "Anu_2024.csv", "Banana_2022.csv", "Bertha_2022_summer.csv", "Bertha_2022.csv", "Bertha_2023_summer.csv", "Bertha_2023.csv", "Bertha_2024.csv", "Coyote_24.csv", "Felch_2024.csv", "Goatgrass_2022.csv", "Goatgrass_2024.csv", "Long_2022.csv", "Lower_Banana_2022.csv", "Pond_2022csv.csv", "Pond_2023_.csv", "Pond_2024.csv", "Quarry_1_2024.csv", "Quarry_2_2024.csv", "Quarry_3_2024.csv", "Quarry_4_2024.csv", "Quarry_5_2024.csv", "Quarry_2022.csv", "Quarry_Close_2022.csv", "Quarry_Close_2023.csv", "Quarry_Close_2024.csv", "Quarry_Far_2022.csv", "Quarry_Far_2023.csv", "Quarry_Far_2024.csv", "Quarry1_2023.csv", "Randy_2022.csv", "Randy_2023.csv", "Rock_2022.csv", "Rock_2023.csv", "Rock_2024.csv", "South_Goatgrass_2024.csv", "Upper_Grid_2_2024.csv", "Vineyard_2022.csv", "Vineyard_2024.csv"  };  % Use one network as a test 
 
-    for network_index = 1%:length(networks)
+    for network_index = 1:length(networks)
         network_file = networks{network_index};
         
         % Read the entire CSV as a table
@@ -69,7 +74,7 @@ mkdir('./data')
         version_names = {'full_network', 'serpentine_network', 'nonserpentine_network'};
         
         % Run simulation for each data version
-        for version_index =2% 1%:length(data_versions)
+        for version_index =1:3 % 1%:length(data_versions)
             data = data_versions{version_index};
             version_name = version_names{version_index};
             
@@ -77,7 +82,7 @@ mkdir('./data')
             death_case = 3;
             
             % Construct file name
-          %  file_name = sprintf('%s_%s_case%d', erase(network_file, '.csv'), version_name, death_case);
+           file_name = sprintf('%s_%s_case%d', erase(network_file, '.csv'), version_name, death_case);
               file_name = [network_index, death_case];
                 % Run simulation for full network (both serpentine and non-serpentine)
                 [Alpha, P, A] = run_inv_PC(file_name, data);
@@ -90,9 +95,12 @@ mkdir('./data')
             
 
             % Write data to CSV files
-            writematrix(plant_data, sprintf('data/P_%d_version%d.csv', network_index,version_index));
-            writematrix(animal_data, sprintf('data/A_%d_version%d.csv', network_index, version_index));
-            writematrix(alpha_data, sprintf('data/Alpha_%d_version%d.csv', network_index, version_index));
+            writematrix(plant_data, sprintf('data/P_%s_version%d.csv', erase(network_file, '.csv'), version_index));
+            writematrix(animal_data, sprintf('data/A_%s_version%d.csv', erase(network_file, '.csv'), version_index));
+            writematrix(alpha_data, sprintf('data/Alpha_%s_version%d.csv', erase(network_file, '.csv'), version_index));
+           % writematrix(plant_data, sprintf('data/P_%d_version%d.csv', network_index,version_index));
+            %writematrix(animal_data, sprintf('data/A_%d_version%d.csv', network_index, version_index));
+            %writematrix(alpha_data, sprintf('data/Alpha_%d_version%d.csv', network_index, version_index));
         end
     end
 end
