@@ -13,7 +13,7 @@
 
 %% Updated 2/19/2025--Becca: fixed typos in set_initial_state.m and ran with all of the networks together 
 % 
-%% Updated 1/23/2025-Taran..spillover project
+%% Updated 3/13/2025-Taran..spillover project
 
 %%%%% Updates 12/23/2023 Lincolnshire, IL by Becca Nelson:
 %%% began modification of code for cross-boundary spillover project 
@@ -45,7 +45,7 @@ mkdir('./data')
 
         % Extract column species names (header row)
         col_ids = tbl.Properties.VariableNames;
-
+        col_ids2=col_ids';
         % Extract numeric data (the core of the matrix)
         network_data = table2array(tbl);
         
@@ -93,12 +93,20 @@ mkdir('./data')
             animal_data = [full(A{1}), full(A{2})];
             alpha_data = [full(Alpha{1}), full(Alpha{2})];
             
+            plant_data_cell = [row_ids, num2cell(plant_data)];
+            animal_data_cell = [col_ids, num2cell(animal_data)];
 
+            
             % Write data to CSV files
-            writematrix(plant_data, sprintf('data/P_%s_version%d.csv', erase(network_file, '.csv'), version_index));
-            writematrix(animal_data, sprintf('data/A_%s_version%d.csv', erase(network_file, '.csv'), version_index));
+            writecell(plant_data_cell, sprintf('data/P_%s_version%d.csv', erase(network_file, '.csv'), version_index));
+            writecell(animal_data_cell, sprintf('data/A_%s_version%d.csv', erase(network_file, '.csv'), version_index));
             writematrix(alpha_data, sprintf('data/Alpha_%s_version%d.csv', erase(network_file, '.csv'), version_index));
-           % writematrix(plant_data, sprintf('data/P_%d_version%d.csv', network_index,version_index));
+            
+           
+            %writematrix(plant_data, sprintf('data/P_%s_version%d.csv', erase(network_file, '.csv'), version_index));
+            %writematrix(animal_data, sprintf('data/A_%s_version%d.csv', erase(network_file, '.csv'), version_index));
+      
+            %writematrix(plant_data, sprintf('data/P_%d_version%d.csv', network_index,version_index));
             %writematrix(animal_data, sprintf('data/A_%d_version%d.csv', network_index, version_index));
             %writematrix(alpha_data, sprintf('data/Alpha_%d_version%d.csv', network_index, version_index));
         end
