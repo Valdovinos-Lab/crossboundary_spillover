@@ -34,7 +34,7 @@ mkdir('./data')
 
     % List of network CSV files
     networks = {'Aikawa_2022_summer.csv', "Aikawa_2022.csv", "Aikawa_2024.csv", "Anu_2024.csv", "Banana_2022.csv", "Bertha_2022_summer.csv", "Bertha_2022.csv", "Bertha_2023_summer.csv", "Bertha_2023.csv", "Bertha_2024.csv", "Coyote_24.csv", "Felch_2024.csv", "Goatgrass_2022.csv", "Goatgrass_2024.csv", "Long_2022.csv", "Lower_Banana_2022.csv", "Pond_2022csv.csv", "Pond_2023_.csv", "Pond_2024.csv", "Quarry_1_2024.csv", "Quarry_2_2024.csv", "Quarry_3_2024.csv", "Quarry_4_2024.csv", "Quarry_5_2024.csv", "Quarry_2022.csv", "Quarry_Close_2022.csv", "Quarry_Close_2023.csv", "Quarry_Close_2024.csv", "Quarry_Far_2022.csv", "Quarry_Far_2023.csv", "Quarry_Far_2024.csv", "Quarry1_2023.csv", "Randy_2022.csv", "Randy_2023.csv", "Rock_2022.csv", "Rock_2023.csv", "Rock_2024.csv", "South_Goatgrass_2024.csv", "Upper_Grid_2_2024.csv", "Vineyard_2022.csv", "Vineyard_2024.csv"  };  % Use one network as a test 
-
+%networks = {'Aikawa_2022_summer.csv'} for testing
     for network_index = 1:length(networks)
         network_file = networks{network_index};
         
@@ -90,9 +90,26 @@ mkdir('./data')
            
             
             % Save results
-            plant_data = [full(P{1}), full(P{2})];
-            animal_data = [full(A{1}), full(A{2})];
-            alpha_data = [full(Alpha{1}), full(Alpha{2})];
+            %plant_data = [full(P{1}), full(P{2})];
+            %animal_data = [full(A{1}), full(A{2})];
+            %alpha_data = [full(Alpha{1}), full(Alpha{2})];
+
+   %  plant_data = [full(P{1})]; % Start with the first element
+%for i = 2:length(P)
+    %plant_data = [plant_data, full(P{i})]; % Concatenate each full matrix column-wise
+%end
+
+%  animal_data = [full(A{1})]; 
+% for i = 2:length(A)
+ %   animal_data = [animal_data, full(A{i})]; % Concatenate each full matrix column-wise
+%end
+
+%alpha_data = [full(Alpha{1})]; % Start with the first element
+%for i = 2:length(Alpha)
+ %   alpha_data = [alpha_data, full(Alpha{i})]; % Concatenate each full matrix column-wise
+%end
+
+
             
             plant_data_cell = [row_ids, num2cell(plant_data)];
             animal_data_cell = [col_ids2, num2cell(animal_data)];
