@@ -14,6 +14,7 @@
 %% Updated 2/19/2025--Becca: fixed typos in set_initial_state.m and ran with all of the networks together 
 % 
 %% Updated 3/13/2025-Taran..spillover project
+%%% Updated 3/17/2025 Becca..fixed minor typo in .run code 
 
 %%%%% Updates 12/23/2023 Lincolnshire, IL by Becca Nelson:
 %%% began modification of code for cross-boundary spillover project 
@@ -94,7 +95,7 @@ mkdir('./data')
             alpha_data = [full(Alpha{1}), full(Alpha{2})];
             
             plant_data_cell = [row_ids, num2cell(plant_data)];
-            animal_data_cell = [col_ids, num2cell(animal_data)];
+            animal_data_cell = [col_ids2, num2cell(animal_data)];
 
             
             % Write data to CSV files
