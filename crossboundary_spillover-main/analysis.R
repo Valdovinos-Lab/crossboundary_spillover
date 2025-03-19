@@ -2,7 +2,7 @@
 #### Code for analyzing matlab outputs into R dataframes #####
 ##### for Becca and Taran spillover project #######
 ###### date created: 3-17-2025 ###########
-######### date last modified: 3-18-2025 #######
+######### date last modified: 3-19-2025 #######
 rm(list = ls())
 
 ###### Load required packages ######
@@ -19,8 +19,24 @@ network <- read.csv("networks_full.csv") #empirical networks
 
 
 # Create the site_year column by extracting the site, year, and summer (if applicable)
+
+
 plant <- plant %>%
-  mutate(site_year = gsub("^P_([A-Za-z0-9_]+)_([0-9]{4})(_summer)?_.*$", "\\1_\\2\\3", source_dataframe))
+  mutate(
+    site_year = gsub("^P_([A-Za-z0-9_]+)_([0-9]{4})(_summer)?_.*$", "\\1_\\2\\3", source_dataframe),
+    site_year = case_when(
+      site_year %in% c("P_Coyote_24_version1", "P_Coyote_24_version2", "P_Coyote_24_version3") ~ "Coyote_24",
+      site_year %in% c("P_Pond_202_version1", "P_Pond_202_version2", "P_Pond_202_version3") ~ "Pond_2022",
+      TRUE ~ site_year  # Keep all other values unchanged
+    )
+  )
+
+# View unique site_year values
+unique(plant$site_year)
+
+# View unique values
+unique(test[, c("site_year", "version")])
+
 
 
 
@@ -355,7 +371,16 @@ ggplot(data = CESO) +
 ####### Explore animal responses ######
 # Create the site_year column by extracting the site, year, and summer (if applicable)
 animal <- animal %>%
-  mutate(site_year = gsub("^A_([A-Za-z0-9_]+)_([0-9]{4})(_summer)?_.*$", "\\1_\\2\\3", source_dataframe))
+  mutate(
+    site_year = gsub("^A_([A-Za-z0-9_]+)_([0-9]{4})(_summer)?_.*$", "\\1_\\2\\3", source_dataframe),
+    site_year = case_when(
+      site_year %in% c("A_Coyote_24_version1", "A_Coyote_24_version2", "A_Coyote_24_version3") ~ "Coyote_24",
+      site_year %in% c("A_Pond_202_version1", "A_Pond_202_version2", "A_Pond_202_version3") ~ "Pond_2022",
+      TRUE ~ site_year  # Keep all other values unchanged
+    )
+  )
+
+
 
 animal_long <- animal %>%
   pivot_longer(
@@ -376,7 +401,34 @@ animal_summary <- animal_long %>%
   summarise(across(c("extinct_level_A", "animal_abundance", "sum_extract"), 
                    sum, na.rm = TRUE))
 
+network_wide <- network %>%
+  select(metric, site_year, raw_value) %>%
+  pivot_wider(names_from = metric, values_from = raw_value)
+
+animal_long <- left_join(animal_long, network_wide, by = "site_year")
+animal_summary <- left_join(animal_summary, network_wide, by = "site_year")
+
 ## each dot is a unique site/year combo
+animal_summary %>%
+  ggplot() +
+  geom_boxplot(mapping = aes(x = version, y = animal_abundance, color = version), 
+               alpha = 0.7) +
+  theme_classic() +  scale_color_viridis_d() 
+
+animal_summary %>% filter(AF == "2") %>% 
+  ggplot() +
+  geom_point(aes(x = NODFc, y = sum_extract, color = version), 
+             alpha = 0.7) +   geom_smooth(mapping = aes(x = Ind_Contribution_VIVI, y = sum_extract, color = version), 
+                                          method = "lm", se = FALSE) +
+  scale_color_viridis_d() + 
+  theme_classic()  
+
+
+animal_long %>%  filter(ARTH %in% c("APME", "BOVO", "BOCA", "BOVO", "LAIN", "HALI_LATI", "ANCA", "EUAC", "EUAL", "ANBA", "ANLE")) %>% 
+  ggplot() +
+  geom_boxplot(mapping = aes(x = version, y = animal_abundance, color = version), 
+               alpha = 0.7) +
+  theme_classic() +  scale_color_viridis_d() + facet_wrap(~ARTH, scales = "free")
 
 ggplot(data = animal_summary) +
   geom_point(mapping = aes(x = version, y = animal_abundance, color = AF), 
@@ -754,27 +806,297 @@ CESO_sorensen  %>% ggplot() +
   facet_wrap(~version)
 
 ###### Explore Networks--Network Level properties ######
-plant_long <- left_join(plant_long, network, by = "site_year")
-plant_summary <- left_join(plant_summary, network, by = "site_year")
+network_wide <- network %>%
+  select(metric, site_year, raw_value) %>%
+  pivot_wider(names_from = metric, values_from = raw_value)
+
+plant_long <- left_join(plant_long, network_wide, by = "site_year")
+plant_summary <- left_join(plant_summary, network_wide, by = "site_year")
+
+
 
 ### overall plant responses 
-plant_summary %>% filter(metric == "NODF") %>% ggplot() +
-  geom_point(mapping = aes(x = raw_value, y = visit_quanity, color = AF), 
+plant_summary %>%  ggplot() +
+  geom_point(mapping = aes(x = NODF, y = visit_quanity, color = AF), 
              position = position_jitter(width = 0.2, height = 0), 
              alpha = 0.7) + 
   theme_classic() + 
-  facet_wrap(~version) +  labs(x = "NODF")
+  facet_wrap(~version) 
 
-plant_summary %>% filter(metric == "weighted NODF") %>% ggplot() +
-  geom_point(mapping = aes(x = raw_value, y = plant_abundance, color = AF), 
+plant_summary %>% ggplot() +
+  geom_point(mapping = aes(x = `weighted NODF`, y = plant_abundance, color = AF), 
              position = position_jitter(width = 0.2, height = 0), 
              alpha = 0.7) + 
   theme_classic() + 
-  facet_wrap(~version) +  labs(x = "weighted NODF")
+  facet_wrap(~version) 
 
-plant_summary %>% filter(metric == "niche.overlap.HL") %>% ggplot() +
-  geom_point(mapping = aes(x = raw_value, y = sum_pol, color = AF), 
+plant_summary %>% ggplot() +
+  geom_point(mapping = aes(x = NODFc, y = visit_quality, color = AF), 
              position = position_jitter(width = 0.2, height = 0), 
              alpha = 0.7) + 
   theme_classic() + 
-  facet_wrap(~version) +  labs(x = "niche.overlap.HL")
+  facet_wrap(~version) 
+
+plant_summary %>% ggplot() +
+  geom_point(mapping = aes(x = niche.overlap.HL, y = sum_pol, color = AF), 
+             position = position_jitter(width = 0.2, height = 0), 
+             alpha = 0.7) + 
+  theme_classic() + 
+  facet_wrap(~version) 
+
+plant_summary %>% ggplot() +
+  geom_point(mapping = aes(x = niche.overlap.LL, y = visit_quanity, color = AF), 
+             position = position_jitter(width = 0.2, height = 0), 
+             alpha = 0.7) + 
+  theme_classic() + 
+  facet_wrap(~version) 
+
+##### by species
+
+plant_long %>% ggplot() +
+  geom_point(mapping = aes(x = NODFc, y = visit_quanity, color = version, shape = AF), 
+             position = position_jitter(width = 0.2, height = 0), 
+             alpha = 0.7) + 
+  theme_classic() + 
+  facet_wrap(~PLANT, scales = "free") 
+
+plant_long %>% filter(PLANT == "TRFU") %>%  ggplot() +
+  geom_point(mapping = aes(x = version, y = visit_quality, color = Ind_Contribution_TRFU, shape = AF), 
+             position = position_jitter(width = 0.2, height = 0), 
+             alpha = 0.7) + 
+  theme_classic()  
+
+plant_long %>%
+  filter(PLANT == "TRFU") %>%
+  ggplot() +
+  geom_boxplot(mapping = aes(x = version, y = visit_quanity, color = AF), 
+               alpha = 0.7) + 
+  theme_classic()
+
+plant_summary %>%
+  ggplot() +
+  geom_boxplot(mapping = aes(x = version, y = sum_pol, color = AF), 
+               alpha = 0.7) + 
+  theme_classic() + geom_jitter(mapping = aes(x = version, y = sum_pol, color = AF), 
+                                position = position_jitter(width = 0.2, height = 0), 
+                                alpha = 0.2) + 
+  theme_classic()
+
+plant_long %>% filter(PLANT == "LACA") %>% 
+  ggplot() +
+  geom_boxplot(mapping = aes(x = version, y = plant_abundance, color = AF), 
+               alpha = 0.7) + 
+  theme_classic() + geom_jitter(mapping = aes(x = version, y = plant_abundance, color = AF), 
+                                position = position_jitter(width = 0.2, height = 0), 
+                                alpha = 0.2) + 
+  theme_classic()
+
+plant_long %>% filter(PLANT == "CESO") %>% 
+  ggplot() +
+  geom_boxplot(mapping = aes(x = version, y = plant_abundance, color = AF), 
+               alpha = 0.7) + 
+  theme_classic() + geom_jitter(mapping = aes(x = version, y = plant_abundance, color = AF), 
+                                position = position_jitter(width = 0.2, height = 0), 
+                                alpha = 0.2) + 
+  theme_classic()
+
+
+plant_long %>%
+  ggplot() +
+  geom_boxplot(mapping = aes(x = version, y = plant_abundance, color = AF), 
+               alpha = 0.7) + 
+  theme_classic() + geom_jitter(mapping = aes(x = version, y = plant_abundance, color = AF), 
+                                position = position_jitter(width = 0.2, height = 0), 
+                                alpha = 0.2) + 
+  theme_classic() + facet_wrap(~PLANT)
+
+plant_long %>%
+  ggplot() +
+  geom_boxplot(mapping = aes(x = version, y = visit_quanity, color = AF), 
+               alpha = 0.7) + 
+  theme_classic() + geom_jitter(mapping = aes(x = version, y = visit_quanity, color = AF), 
+                                position = position_jitter(width = 0.2, height = 0), 
+                                alpha = 0.2) + 
+  theme_classic() + facet_wrap(~PLANT, scales = "free")
+
+plant_long %>%
+  ggplot() +
+  geom_boxplot(mapping = aes(x = version, y = visit_quality, color = AF), 
+               alpha = 0.7) + 
+  theme_classic() + geom_jitter(mapping = aes(x = version, y = visit_quality, color = AF), 
+                                position = position_jitter(width = 0.2, height = 0), 
+                                alpha = 0.2) + 
+  theme_classic() + facet_wrap(~PLANT)
+
+######## Plants by soil type ############
+plant_long <- plant_long %>%
+  mutate(Soil_Type = case_when(
+    PLANT %in% c('ASER', 'VIVI', 'CESO', 'MEIN', 'PHAQ', 'ANAR', 'AMME', 
+                 'ERCI', 'mustard', 'yellow_aster', 'dandelion', 'MEPO', 'SEVU') ~ 'Non-Serpentine',
+    TRUE ~ 'Serpentine'  # All other plants get 'serpentine'
+  ))
+
+
+## yes share polliantors with NS plants or is a NS plant
+## no don't share pollinators with NS plants 
+plant_long <- plant_long %>%
+  mutate(Overlap = case_when(
+    PLANT %in% c("TRFU", "VIVI", "PLER", "ANFI", "LACA", "DICA", "ACBR", "RACA", "AMME", "ESCA",
+                 "AGHE", "LUSU", "ERCI", "LUBI", "SIBE", "ERGU", "GICA", "LACH", "TRLA",
+                 "LODA", "EUSP", "LUMI", "CRHI", "MIGU", "CARU", "ASJE", "THCA", "URLI",
+                 "ASBR", "TRER", "GITR", "AGBR", "MICA", "LOHO", "DEVA", "TRHI", "HIIN",
+                 "PLNO", "LUNA", "WYAN", "RILE", "ACWR", "TRBI", "CASAN", "ERCA", "ERLA",
+                 "PHIM", "CLPU", "LUNA/LUBI", "DEUL", "Sidalcea_sp.", "PHTA", "MIDO",
+                 "LAMI", "LUAL", "ACMO", "Asteraceae_sp.", "RHAR", "CHGL", "URCI", "DEHE",
+                 "WYAU", "CAEX", "TOVE", "ALAM", "CALU", "COSP", "ERHI", "TAOF", "SEVU",
+                 "TRAL", "MEPO", "GEDI", "CADE1", "GRCA", "ERLU", "ASFA", "HECU", "ERLA",
+                 "ASER", "HEEX", "HECO", "ERNU", "CAPA", "PEKE", "CESO", "ACAM", "STAL",
+                 "HOMA", "HEAR", "LULU", "LERA", "ZETR", "ESCA", "CAPY", "CLPU", "SAVE",
+                 "TRLA", "HOVI", "ACWR", "MEIN", "Clarkia", "CUCA", "VIVI", "ERGU", "PHAQ",
+                 "ACMI", "CLGR", "NOMA", "CIVU", "SOAS", "SOCA", "ANAR") ~ "Yes",
+    TRUE ~ "No"
+  ))
+
+
+
+plant_long %>% filter(Soil_Type == "Serpentine") %>% filter(version != "3") %>% 
+  ggplot() +
+  geom_boxplot(mapping = aes(x = version, y = plant_abundance, color = Overlap), 
+               alpha = 0.7) + 
+  theme_classic() + geom_jitter(mapping = aes(x = version, y = plant_abundance, color = Overlap), 
+                                position = position_jitter(width = 0.2, height = 0), 
+                                alpha = 0.2) + 
+  theme_classic() + facet_wrap(~site_year)
+
+plant_long %>% filter(Soil_Type == "Serpentine") %>% filter(version != "3") %>% 
+  ggplot() +
+  geom_boxplot(mapping = aes(x = version, y = visit_quanity, color = AF), 
+               alpha = 0.7) + 
+  theme_classic() + geom_jitter(mapping = aes(x = version, y = visit_quanity, color = AF), 
+                                position = position_jitter(width = 0.2, height = 0), 
+                                alpha = 0.2) + 
+  theme_classic() + facet_wrap(~site_year, scales = "free")
+
+plant_long %>% filter(Soil_Type == "Non-Serpentine") %>% filter(version != "2") %>% 
+  ggplot() +
+  geom_boxplot(mapping = aes(x = version, y = plant_abundance, color = AF), 
+               alpha = 0.7) + 
+  theme_classic() + geom_jitter(mapping = aes(x = version, y = plant_abundance, color = AF), 
+                                position = position_jitter(width = 0.2, height = 0), 
+                                alpha = 0.2) + 
+  theme_classic() + facet_wrap(~site_year)
+
+plant_long %>%
+  ggplot() +
+  geom_boxplot(mapping = aes(x = version, y = plant_abundance, color = Soil_Type), 
+               alpha = 0.7) +
+  theme_classic() + facet_wrap(~site_year)
+
+plant_long %>%
+  ggplot() +
+  geom_boxplot(mapping = aes(x = version, y = visit_quanity, color = Soil_Type), 
+               alpha = 0.7) +
+  theme_classic() + facet_wrap(~site_year, scales = "free")
+
+plant_long %>%
+  ggplot() +
+  geom_boxplot(mapping = aes(x = version, y = visit_quality, color = Soil_Type), 
+               alpha = 0.7) +
+  theme_classic() + facet_wrap(~site_year)
+
+plant_long %>%   filter(AF == "2") %>% 
+  ggplot() +
+  geom_boxplot(mapping = aes(x = Soil_Type, y = visit_quality, color = version), 
+               alpha = 0.7) +
+  theme_classic() + facet_wrap(~site_year, scales = 'free') +   scale_color_viridis_d()
+
+plant_long %>%   filter(AF == "2") %>% 
+  ggplot() +
+  geom_boxplot(mapping = aes(x = Soil_Type, y = visit_quanity, color = version), 
+               alpha = 0.7) +
+  theme_classic() + facet_wrap(~site_year, scales = 'free') +   scale_color_viridis_d() 
+
+plant_long %>%   filter(AF == "2") %>% 
+  ggplot() +
+  geom_boxplot(mapping = aes(x = Soil_Type, y = plant_abundance, color = version), 
+               alpha = 0.7) +
+  theme_classic() + facet_wrap(~site_year) +   scale_color_viridis_d() 
+
+
+plant_long %>%   filter(AF == "2") %>% 
+  ggplot() +
+  geom_boxplot(mapping = aes(x = Soil_Type, y = initial_plant_abundance, color = version), 
+               alpha = 0.7) +
+  theme_classic() + facet_wrap(~site_year) +   scale_color_viridis_d() 
+
+plant_long %>% filter(AF == "2") %>% 
+  ggplot() +
+  geom_boxplot(mapping = aes(x = Soil_Type, y = plant_abundance, color = version), 
+               alpha = 1) + 
+  theme_classic() +   scale_color_viridis_d() 
+
+plant_long %>%  filter(AF == "2") %>% 
+  ggplot() +
+  geom_boxplot(mapping = aes(x = Soil_Type, y = visit_quality, color = version), 
+               alpha = 1) + 
+  theme_classic() +   scale_color_viridis_d() 
+
+ plant_long %>% 
+  filter(AF == "2") %>% 
+  ggplot() +
+  geom_boxplot(mapping = aes(x = Soil_Type, y = visit_quanity, color = version), 
+               alpha = 1) +   theme_classic() +   
+  scale_color_viridis_d() 
+ 
+
+
+#+    coord_cartesian(ylim = c(0, 10000)) 
+
+
+
+#+ geom_jitter(mapping = aes(x = version, y = plant_abundance, color = Soil_Type), 
+                                #position = position_jitter(width = 0.2, height = 0), 
+                               # alpha = 0.1) 
+
+
+library(viridis)
+
+plant_long %>% filter(Soil_Type == "Serpentine") %>% filter(version != "3") %>% 
+  ggplot() +
+  geom_point(mapping = aes(x = visit_quanity, y = plant_abundance, color = version, shape = Soil_Type), 
+             alpha = 0.7) +
+  scale_color_viridis_d() +   coord_cartesian(xlim = c(0, 10000), ylim = c(0, 1)) +
+  theme_classic() #limits outlier 
+
+plant_long %>% filter(Soil_Type == "Serpentine") %>% filter(version != "3") %>% 
+  ggplot() +
+  geom_point(mapping = aes(x = visit_quality, y = plant_abundance, color = version, shape = Soil_Type), 
+             alpha = 0.7) +
+  scale_color_viridis_d() +
+  theme_classic()
+
+plant_long %>% filter(Soil_Type == "Non-Serpentine") %>% filter(version != "2") %>% 
+  ggplot() +
+  geom_point(mapping = aes(x = visit_quality, y = plant_abundance, color = version, shape = Soil_Type), 
+             alpha = 0.7) +
+  scale_color_viridis_d() +
+  theme_classic()
+
+plant_long %>% filter(PLANT == "VIVI") %>% filter(AF == "2") %>% 
+  ggplot() +
+  geom_point(mapping = aes(x = Ind_Contribution_VIVI, y = visit_quality, color = version), 
+             alpha = 0.7) +  geom_smooth(mapping = aes(x = Ind_Contribution_VIVI, y = visit_quality, color = version), 
+                                         method = "lm", se = FALSE) +
+  scale_color_viridis_d() +
+  theme_classic()
+
+plant_long %>% filter(PLANT == "CESO") %>% filter(AF == "2") %>% 
+  ggplot() +
+  geom_point(mapping = aes(x = Ind_Contribution_CESO, y = visit_quality, color = version), 
+             alpha = 0.7) +  geom_smooth(mapping = aes(x = Ind_Contribution_CESO, y = visit_quality, color = version), 
+                                         method = "lm", se = FALSE) +
+  scale_color_viridis_d() +
+  theme_classic()
+
+
+

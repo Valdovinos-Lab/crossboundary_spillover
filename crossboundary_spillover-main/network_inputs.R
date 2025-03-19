@@ -63,7 +63,7 @@ summer_sorensen <- summer_sorensen %>%
                           "Bertha_2023" = "Bertha_2023_summer"))
 
 summer_full <- summer_full %>%
-  mutate(treatment = recode(treatment, 
+  mutate(site = recode(site, 
                           "Aikawa_2022" = "Aikawa_2022_summer", 
                           "Bertha_2022" = "Bertha_2022_summer",
                           "Bertha_2023" = "Bertha_2023_summer"))
@@ -94,10 +94,10 @@ spring_between <- spring_between %>%
   rename(site_year = site)
 
 spring_full <- spring_full %>%
-  rename(site_year = treatment)
+  rename(site_year = site)
 
 summer_full <- summer_full %>%
-  rename(site_year = treatment)
+  rename(site_year = site)
 
 ###### combine dataframes ######
 networks <- rbind(spring, summer)
