@@ -2,7 +2,7 @@
 #### Code for analyzing matlab outputs into R dataframes #####
 ##### for Becca and Taran spillover project #######
 ###### date created: 3-17-2025 ###########
-######### date last modified: 3-19-2025 #######
+######### date last modified: 3-21-2025 #######
 rm(list = ls())
 
 ###### Load required packages ######
@@ -15,6 +15,7 @@ network <- read.csv("networks_full.csv") #empirical networks
 
 ## version 1 is both, version 2 is serpentine, version 3 is non-serpentine
 ## 1 is AF, 2 is no AF 
+
 ###### Explore Plants ##########
 
 
@@ -35,7 +36,7 @@ plant <- plant %>%
 unique(plant$site_year)
 
 # View unique values
-unique(test[, c("site_year", "version")])
+#unique(test[, c("site_year", "version")])
 
 
 
@@ -94,6 +95,52 @@ ggplot(data = plant_long) +
 
 ggplot(data = plant_long) +
   geom_point(mapping = aes(x = version, y = visit_quality, color = AF)) + theme_classic() + facet_wrap(~PLANT) + theme(legend.position = "none")
+
+plant_long %>% filter(PLANT == "HEEX") %>% ggplot() +
+  geom_point(mapping = aes(x = version, y = plant_abundance, color = AF), 
+             position = position_jitter(width = 0.2, height = 0), 
+             alpha = 0.7)  + theme_classic() + facet_wrap(~site_year)
+
+plant_long %>% filter(PLANT == "CESO") %>% ggplot() +
+  geom_point(mapping = aes(x = AF, y = visit_quanity, color = version), 
+             position = position_jitter(width = 0.2, height = 0), 
+             alpha = 0.7)  + theme_classic() + facet_wrap(~site_year)
+
+plant_long %>% 
+  filter(PLANT == "CESO") %>% 
+  ggplot(aes(x = AF, y = visit_quanity, fill = version)) + 
+  geom_boxplot(alpha = 0.7) + 
+  theme_classic() 
+
+plant_long %>% 
+  filter(PLANT == "CRHI") %>% 
+  ggplot(aes(x = AF, y = visit_quanity, color = version)) + geom_point() + 
+  theme_classic() + facet_wrap(~site_year)
+
+plant_long <- plant_long %>%
+  mutate(Soil_Type = case_when(
+    PLANT %in% c('ASER', 'VIVI', 'CESO', 'MEIN', 'PHAQ', 'ANAR', 'AMME', 
+                 'ERCI', 'mustard', 'yellow_aster', 'dandelion', 'MEPO', 'SEVU') ~ 'Non-Serpentine',
+    TRUE ~ 'Serpentine'  # All other plants get 'serpentine'
+  ))
+
+
+plant_long %>% 
+  filter(Soil_Type == "Non-Serpentine") %>% 
+  ggplot(aes(x = version, y = visit_quanity, fill = AF)) + 
+  geom_boxplot(alpha = 0.7) + 
+  theme_classic() + facet_wrap(~PLANT, scales = 
+                                 "free")
+
+plant_long %>% 
+  filter(Soil_Type == "Non-Serpentine") %>% 
+  ggplot(aes(x = AF, y = visit_quanity, fill = version)) + 
+  geom_boxplot(alpha = 0.7) + 
+  theme_classic() + facet_wrap(~PLANT, scales = 
+                                 "free")
+
+
+
 
 ###### TRFU #############
 # Summarize sums for each response variable by source_dataframe and version
@@ -366,6 +413,24 @@ ggplot(data = CESO) +
              position = position_jitter(width = 0.2, height = 0), 
              alpha = 0.7) + 
   theme_classic() + facet_wrap(~version)
+
+###### Persistence #####
+
+plant_long %>%
+  select(AF, PLANT, version, site_year, extinct_level_P, Soil_Type) %>%
+  count(AF, PLANT, version, site_year, Soil_Type, extinct_level_P)
+
+plant_long %>%
+  group_by(Soil_Type, version, AF) %>%
+  summarise(
+    extinct_1_prop = mean(extinct_level_P, na.rm = TRUE),
+    count = n()
+  ) %>%
+  ungroup()
+
+##  AF decreases the proportion of NS and Serp sp that go extinct
+
+
 
 
 ####### Explore animal responses ######
