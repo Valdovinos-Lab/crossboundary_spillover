@@ -2,7 +2,7 @@
 #### Code for analyzing matlab outputs into R dataframes #####
 ##### for Becca and Taran spillover project #######
 ###### date created: 3-17-2025 ###########
-######### date last modified: 3-21-2025 #######
+######### date last modified: 6-24-2025 #######
 rm(list = ls())
 
 ###### Load required packages ######
@@ -416,12 +416,12 @@ ggplot(data = CESO) +
 
 ###### Persistence #####
 
-plant_long %>%
+persist <- plant_long %>%
   select(AF, PLANT, version, site_year, extinct_level_P, Soil_Type) %>%
   count(AF, PLANT, version, site_year, Soil_Type, extinct_level_P)
 
-plant_long %>%
-  group_by(Soil_Type, version, AF) %>%
+persist <- persist %>%
+  group_by(Soil_Type, version, AF, site_year) %>%
   summarise(
     extinct_1_prop = mean(extinct_level_P, na.rm = TRUE),
     count = n()
@@ -429,6 +429,12 @@ plant_long %>%
   ungroup()
 
 ##  AF decreases the proportion of NS and Serp sp that go extinct
+
+ggplot(data = persist, aes(x = Soil_Type, y = extinct_1_prop, color = version)) +
+  geom_boxplot(outlier.shape = NA) +  # Hide outliers so they don't overlap with jittered points
+  geom_jitter(position = position_jitter(width = 0.2, height = 0), alpha = 0.7) +
+  theme_classic() +
+  facet_wrap(~AF) +    scale_color_viridis_d()
 
 
 
@@ -479,6 +485,20 @@ animal_summary %>%
   geom_boxplot(mapping = aes(x = version, y = animal_abundance, color = version), 
                alpha = 0.7) +
   theme_classic() +  scale_color_viridis_d() 
+
+## specialists examples
+animal_long %>% filter(ARTH %in% c("ZEEU", "VAVI", "MEAP", "ANDI")) %>% 
+  ggplot() +
+  geom_boxplot(mapping = aes(x = version, y = animal_abundance, color = version), 
+               alpha = 0.7) +
+  theme_classic() +  scale_color_viridis_d() + facet_wrap(~ARTH*AF, scales = "free")
+
+### generalist examples
+animal_long %>% filter(ARTH %in% c("APME", "Colias", "EUAC", "OSCA", "HALI", "LAIN")) %>% 
+  ggplot() +
+  geom_boxplot(mapping = aes(x = version, y = animal_abundance, color = version), 
+               alpha = 0.7) +
+  theme_classic() +  scale_color_viridis_d() + facet_wrap(~ARTH*AF, scales = "free")
 
 animal_summary %>% filter(AF == "2") %>% 
   ggplot() +

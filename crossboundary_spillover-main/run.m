@@ -9,7 +9,7 @@
 %   ranging from 1-1200
 %
 
-
+%% Updated 6-24-15 Becca: added code to convert to binary matrices 
 
 %% Updated 2/19/2025--Becca: fixed typos in set_initial_state.m and ran with all of the networks together 
 % 
@@ -77,6 +77,7 @@ mkdir('./data')
         % Run simulation for each data version
         for version_index =1:3 % 1%:length(data_versions)
             data = data_versions{version_index};
+            data = double(data > 0);  % Convert networks to binary (0/1) matrix
             version_name = version_names{version_index};
             
             % Specify mortality case 
