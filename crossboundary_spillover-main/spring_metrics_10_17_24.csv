@@ -1,0 +1,242 @@
+metric,site,raw_value,z-score,treatment,pvalue,significance
+weighted NODF,Bertha_2022,21.73116,1.987875198,Bertha_2022,0.046825494,*
+weighted NODF,Rock_2022,17.83504,-2.568138177,Rock_2022,0.010224639,*
+weighted NODF,Quarry_2022,7.77575,-2.70091453,Quarry_2022,0.006914911,**
+weighted NODF,Goatgrass_2022,16.97873,3.257044416,Goatgrass_2022,0.001125788,**
+weighted NODF,Long_2022,13.25361,-0.701946867,Long_2022,0.4827123,not significant
+weighted NODF,Aikawa_2022,14.54812,-1.565401814,Aikawa_2022,0.117488723,not significant
+weighted NODF,Bertha_2023,11.24413,0.975799168,Bertha_2023,0.329163997,not significant
+weighted NODF,Quarry1_2023,7.673616,1.037974914,Quarry1_2023,0.299281734,not significant
+weighted NODF,Rock_2023,19.89362,-0.264959415,Rock_2023,0.791040727,not significant
+weighted NODF,Rock_2024,8.544495,-0.954585426,Rock_2024,0.33978739,not significant
+weighted NODF,Upper_Grid_2_2024,19.22123,-0.355551633,Upper_Grid_2_2024,0.722176371,not significant
+weighted NODF,Felch_2024,9.181655,-1.945439236,Felch_2024,0.051722136,not significant
+weighted NODF,Coyote_24,9.678114,-1.891177853,Coyote_24,0.058600607,not significant
+weighted NODF,Aikawa_2024,6.6333,-0.70674091,Aikawa_2024,0.479727501,not significant
+weighted NODF,Goatgrass_2024,21.60792,4.316473782,Goatgrass_2024,1.59E-05,***
+weighted NODF,South_Goatgrass_2024,12.50612,-2.890716431,South_Goatgrass_2024,0.003843648,**
+weighted NODF,Anu_2024,25.95801,-1.404892954,Anu_2024,0.160053112,not significant
+weighted NODF,Quarry_1_2024,12.77715,-0.615372119,Quarry_1_2024,0.538309,not significant
+weighted NODF,Quarry_2_2024,9.256674,-2.764828239,Quarry_2_2024,0.005695278,**
+weighted NODF,Quarry_3_2024,21.12166,-0.908167572,Quarry_3_2024,0.363789694,not significant
+weighted NODF,Quarry_4_2024,13.21138,0.439338778,Quarry_4_2024,0.66041608,not significant
+weighted NODF,Quarry_5_2024,18.48926,-1.249639625,Quarry_5_2024,0.211431221,not significant
+NODF,Bertha_2022,38.46364,5.039232044,Bertha_2022,4.67E-07,***
+NODF,Rock_2022,38.56153,-0.832453435,Rock_2022,0.405153051,not significant
+NODF,Quarry_2022,18.33997,-1.443559194,Quarry_2022,0.14886301,not significant
+NODF,Goatgrass_2022,29.83562,6.385902841,Goatgrass_2022,1.70E-10,***
+NODF,Long_2022,21.29052,0.231230046,Long_2022,0.817136089,not significant
+NODF,Aikawa_2022,23.50887,-1.304222232,Aikawa_2022,0.192157822,not significant
+NODF,Bertha_2023,21.51485,4.263677049,Bertha_2023,2.01E-05,***
+NODF,Quarry1_2023,16.53545,7.188222103,Quarry1_2023,6.56E-13,***
+NODF,Rock_2023,23.29787,-2.214868951,Rock_2023,0.026769061,*
+NODF,Rock_2024,16.57617,-0.010812414,Rock_2024,0.99137311,not significant
+NODF,Upper_Grid_2_2024,32.98611,2.482644235,Upper_Grid_2_2024,0.013041126,*
+NODF,Felch_2024,13.79197,-3.817514518,Felch_2024,0.000134803,***
+NODF,Coyote_24,19.81456,-0.675140058,Coyote_24,0.499586785,not significant
+NODF,Aikawa_2024,13.52186,2.038088909,Aikawa_2024,0.041541042,*
+NODF,Goatgrass_2024,32.04257,6.941354242,Goatgrass_2024,3.88E-12,***
+NODF,South_Goatgrass_2024,27.35823,-0.939134622,South_Goatgrass_2024,0.34766163,not significant
+NODF,Anu_2024,43.10525,0.79737231,Anu_2024,0.425234836,not significant
+NODF,Quarry_1_2024,25.92236,1.330377467,Quarry_1_2024,0.183393935,not significant
+NODF,Quarry_2_2024,24.33801,-0.723910728,Quarry_2_2024,0.469120543,not significant
+NODF,Quarry_3_2024,37.01662,0.115655697,Quarry_3_2024,0.907925419,not significant
+NODF,Quarry_4_2024,20.07114,1.056669356,Quarry_4_2024,0.290662515,not significant
+NODF,Quarry_5_2024,33.28385,2.979876416,Quarry_5_2024,0.002883647,**
+niche.overlap.LL,Bertha_2022,0.1102259,6.17622257,Bertha_2022,6.57E-10,***
+niche.overlap.LL,Rock_2022,0.0886429,-2.329116471,Rock_2022,0.019852896,*
+niche.overlap.LL,Quarry_2022,0.058042,-1.476427744,Quarry_2022,0.139829099,not significant
+niche.overlap.LL,Goatgrass_2022,0.07786024,3.946175398,Goatgrass_2022,7.94E-05,***
+niche.overlap.LL,Long_2022,0.03909738,-1.052435722,Long_2022,0.292599687,not significant
+niche.overlap.LL,Aikawa_2022,0.08807615,-1.130594243,Aikawa_2022,0.258225912,not significant
+niche.overlap.LL,Bertha_2023,0.08226362,1.520988008,Bertha_2023,0.128262847,not significant
+niche.overlap.LL,Quarry1_2023,0.1239854,8.269189338,Quarry1_2023,1.35E-16,***
+niche.overlap.LL,Rock_2023,0.2630887,0.39081874,Rock_2023,0.695931222,not significant
+niche.overlap.LL,Rock_2024,0.1410354,0.365373898,Rock_2024,0.714832323,not significant
+niche.overlap.LL,Upper_Grid_2_2024,0.5367458,4.33316373,Upper_Grid_2_2024,1.47E-05,***
+niche.overlap.LL,Felch_2024,0.08578728,-0.156214831,Felch_2024,0.875863687,not significant
+niche.overlap.LL,Coyote_24,0.05926044,-1.472882687,Coyote_24,0.140782671,not significant
+niche.overlap.LL,Aikawa_2024,0.09947159,-0.223060233,Aikawa_2024,0.823488628,not significant
+niche.overlap.LL,Goatgrass_2024,0.0623075,1.414135896,Goatgrass_2024,0.157322005,not significant
+niche.overlap.LL,South_Goatgrass_2024,0.104912,-0.783748007,South_Goatgrass_2024,0.433187987,not significant
+niche.overlap.LL,Anu_2024,0.1204932,0.029067216,Anu_2024,0.976810982,not significant
+niche.overlap.LL,Quarry_1_2024,0.2518541,1.834297656,Quarry_1_2024,0.066609822,not significant
+niche.overlap.LL,Quarry_2_2024,0.1184283,0.899630168,Quarry_2_2024,0.368317097,not significant
+niche.overlap.LL,Quarry_3_2024,0.1002483,-1.336096768,Quarry_3_2024,0.181517646,not significant
+niche.overlap.LL,Quarry_4_2024,0.09202617,0.271707909,Quarry_4_2024,0.785846619,not significant
+niche.overlap.LL,Quarry_5_2024,0.1469954,-0.706211437,Quarry_5_2024,0.480056659,not significant
+niche.overlap.HL,Bertha_2022,0.4798607,6.466939728,Bertha_2022,1.00E-10,***
+niche.overlap.HL,Rock_2022,0.2751694,-2.121018828,Rock_2022,0.033920218,*
+niche.overlap.HL,Quarry_2022,0.1927175,-1.066550635,Quarry_2022,0.286174802,not significant
+niche.overlap.HL,Goatgrass_2022,0.3355468,9.074057703,Goatgrass_2022,1.15E-19,***
+niche.overlap.HL,Long_2022,0.2198554,0.656216244,Long_2022,0.511684999,not significant
+niche.overlap.HL,Aikawa_2022,0.2114262,-1.674345449,Aikawa_2022,0.094062727,not significant
+niche.overlap.HL,Bertha_2023,0.1927932,4.698872057,Bertha_2023,2.62E-06,***
+niche.overlap.HL,Quarry1_2023,0.1236605,6.613626233,Quarry1_2023,3.75E-11,***
+niche.overlap.HL,Rock_2023,0.6300119,1.143203851,Rock_2023,0.252953964,not significant
+niche.overlap.HL,Rock_2024,0.1769846,0.634914164,Rock_2024,0.525484399,not significant
+niche.overlap.HL,Upper_Grid_2_2024,0.4435796,5.492433926,Upper_Grid_2_2024,3.96E-08,***
+niche.overlap.HL,Felch_2024,0.2346711,0.531752786,Felch_2024,0.594897227,not significant
+niche.overlap.HL,Coyote_24,0.2326316,-0.799554592,Coyote_24,0.423968905,not significant
+niche.overlap.HL,Aikawa_2024,0.1730099,2.974870006,Aikawa_2024,0.002931127,**
+niche.overlap.HL,Goatgrass_2024,0.4263538,9.757819227,Goatgrass_2024,1.71E-22,***
+niche.overlap.HL,South_Goatgrass_2024,0.4315018,2.152242176,South_Goatgrass_2024,0.031378285,*
+niche.overlap.HL,Anu_2024,0.356929,1.477708852,Anu_2024,0.139485724,not significant
+niche.overlap.HL,Quarry_1_2024,0.3288072,5.352873576,Quarry_1_2024,8.66E-08,***
+niche.overlap.HL,Quarry_2_2024,0.3439828,1.667592656,Quarry_2_2024,0.095396617,not significant
+niche.overlap.HL,Quarry_3_2024,0.3810644,0.07432171,Quarry_3_2024,0.940754403,not significant
+niche.overlap.HL,Quarry_4_2024,0.2673693,0.586829207,Quarry_4_2024,0.557318419,not significant
+niche.overlap.HL,Quarry_5_2024,0.2961925,2.159098026,Quarry_5_2024,0.030842563,*
+mean.number.of.shared.partners.LL,Bertha_2022,0.9142857,5.927097585,Bertha_2022,3.08E-09,***
+mean.number.of.shared.partners.LL,Rock_2022,1.428571,0.093980768,Rock_2022,0.925124434,not significant
+mean.number.of.shared.partners.LL,Quarry_2022,0.4761905,-0.320220532,Quarry_2022,0.74880116,not significant
+mean.number.of.shared.partners.LL,Goatgrass_2022,0.4962121,3.241088485,Goatgrass_2022,0.001190742,**
+mean.number.of.shared.partners.LL,Long_2022,0.5210526,3.312484466,Long_2022,0.000924713,***
+mean.number.of.shared.partners.LL,Aikawa_2022,0.4861538,-0.110862543,Aikawa_2022,0.911725348,not significant
+mean.number.of.shared.partners.LL,Bertha_2023,0.5614035,1.90097007,Bertha_2023,0.057305933,not significant
+mean.number.of.shared.partners.LL,Quarry1_2023,0.4928775,2.78452757,Quarry1_2023,0.005360576,**
+mean.number.of.shared.partners.LL,Rock_2023,0.4444444,0.062188391,Rock_2023,0.950412807,not significant
+mean.number.of.shared.partners.LL,Rock_2024,0.5833333,0.145048887,Rock_2024,0.884672274,not significant
+mean.number.of.shared.partners.LL,Upper_Grid_2_2024,0.9333333,2.34945652,Upper_Grid_2_2024,0.01880084,*
+mean.number.of.shared.partners.LL,Felch_2024,0.5,-1.795846465,Felch_2024,0.072518939,not significant
+mean.number.of.shared.partners.LL,Coyote_24,0.3818182,-1.060515457,Coyote_24,0.288910162,not significant
+mean.number.of.shared.partners.LL,Aikawa_2024,0.5555556,1.728211332,Aikawa_2024,0.083950343,not significant
+mean.number.of.shared.partners.LL,Goatgrass_2024,0.447619,0.332578439,Goatgrass_2024,0.739452521,not significant
+mean.number.of.shared.partners.LL,South_Goatgrass_2024,1.2,0.509803205,South_Goatgrass_2024,0.61018934,not significant
+mean.number.of.shared.partners.LL,Anu_2024,1.538462,0.029245409,Anu_2024,0.976668866,not significant
+mean.number.of.shared.partners.LL,Quarry_1_2024,1.535714,2.469452991,Quarry_1_2024,0.01353198,*
+mean.number.of.shared.partners.LL,Quarry_2_2024,0.8571429,1.607396898,Quarry_2_2024,0.10796733,not significant
+mean.number.of.shared.partners.LL,Quarry_3_2024,1.066667,-0.767830256,Quarry_3_2024,0.442588037,not significant
+mean.number.of.shared.partners.LL,Quarry_4_2024,0.25,0.107267287,Quarry_4_2024,0.914576936,not significant
+mean.number.of.shared.partners.LL,Quarry_5_2024,1.361111,1.216881402,Quarry_5_2024,0.223649343,not significant
+mean.number.of.shared.partners.HL,Bertha_2022,0.7221681,6.622281788,Bertha_2022,3.54E-11,***
+mean.number.of.shared.partners.HL,Rock_2022,0.6772487,-0.392199823,Rock_2022,0.694910575,not significant
+mean.number.of.shared.partners.HL,Quarry_2022,0.3288462,-1.318882397,Quarry_2022,0.187208432,not significant
+mean.number.of.shared.partners.HL,Goatgrass_2022,0.5860404,6.034779403,Goatgrass_2022,1.59E-09,***
+mean.number.of.shared.partners.HL,Long_2022,0.3648764,-0.205898362,Long_2022,0.836870305,not significant
+mean.number.of.shared.partners.HL,Aikawa_2022,0.3975962,-1.815595225,Aikawa_2022,0.069432487,not significant
+mean.number.of.shared.partners.HL,Bertha_2023,0.3635814,4.21815267,Bertha_2023,2.46E-05,***
+mean.number.of.shared.partners.HL,Quarry1_2023,0.2820988,7.671082978,Quarry1_2023,1.71E-14,***
+mean.number.of.shared.partners.HL,Rock_2023,0.6736842,0.686182148,Rock_2023,0.492598254,not significant
+mean.number.of.shared.partners.HL,Rock_2024,0.2857143,0.253357997,Rock_2024,0.799991582,not significant
+mean.number.of.shared.partners.HL,Upper_Grid_2_2024,0.5686275,3.469718317,Upper_Grid_2_2024,0.000521004,***
+mean.number.of.shared.partners.HL,Felch_2024,0.3314394,-0.850587109,Felch_2024,0.394998753,not significant
+mean.number.of.shared.partners.HL,Coyote_24,0.3419355,-0.735459799,Coyote_24,0.462059515,not significant
+mean.number.of.shared.partners.HL,Aikawa_2024,0.2539683,3.346451292,Aikawa_2024,0.000818531,***
+mean.number.of.shared.partners.HL,Goatgrass_2024,0.6037736,10.25936891,Goatgrass_2024,1.07E-24,***
+mean.number.of.shared.partners.HL,South_Goatgrass_2024,0.5810811,1.64896521,South_Goatgrass_2024,0.099154762,not significant
+mean.number.of.shared.partners.HL,Anu_2024,0.8895877,0.866045492,Anu_2024,0.386465215,not significant
+mean.number.of.shared.partners.HL,Quarry_1_2024,0.4970964,4.06535749,Quarry_1_2024,4.80E-05,***
+mean.number.of.shared.partners.HL,Quarry_2_2024,0.4669366,0.444304158,Quarry_2_2024,0.656822695,not significant
+mean.number.of.shared.partners.HL,Quarry_3_2024,0.6086957,-0.429816961,Quarry_3_2024,0.667328794,not significant
+mean.number.of.shared.partners.HL,Quarry_4_2024,0.3619048,0.664434181,Quarry_4_2024,0.506412462,not significant
+mean.number.of.shared.partners.HL,Quarry_5_2024,0.5439408,2.787454474,Quarry_5_2024,0.005312392,**
+NODFc,Long_2022,3.161689,,,,
+NODFc,Aikawa_2022,3.408438,,,,
+NODFc,Bertha_2022,3.877098,,,,
+NODFc,Rock_2022,2.268061,,,,
+NODFc,Quarry_2022,2.590552,,,,
+NODFc,Rock_2023,4.532132,,,,
+NODFc,Bertha_2023,2.584716,,,,
+NODFc,Quarry1_2023,2.407015,,,,
+NODFc,Aikawa_2024,2.783089,,,,
+NODFc,Felch_2024,1.808331,,,,
+NODFc,Coyote_24,3.466347,,,,
+NODFc,South_Goatgrass_2024,2.400281,,,,
+NODFc,Goatgrass_2024,4.427267,,,,
+NODFc,Quarry_1_2024,1.878669,,,,
+NODFc,Quarry_2_2024,2.526136,,,,
+NODFc,Quarry_3_2024,2.451212,,,,
+NODFc,Quarry_4_2024,4.124033,,,,
+NODFc,Quarry_5_2024,2.558066,,,,
+NODFc,Anu_2024,2.401292,,,,
+NODFc,Rock_2024,2.103093,,,,
+NODFc,Upper_Grid_2_2024,3.329538,,,,
+NODFc,Goatgrass_2022,3.536853,,,,
+VIVI_on_TRFU,Bertha_2022,0.3599148,,,,
+VIVI_on_TRFU,Goatgrass_2022,0.2646665,,,,
+VIVI_on_TRFU,Long_2022,0.6670367,,,,
+VIVI_on_TRFU,Rock_2022,0.2748928,,,,
+VIVI_on_TRFU,Aikawa_2022,0.107023,,,,
+VIVI_on_TRFU,Quarry_2022,0.02735547,,,,
+VIVI_on_TRFU,Bertha_2023,0,,,,
+VIVI_on_TRFU,Quarry1_2023,0,,,,
+VIVI_on_TRFU,Rock_2023,0.1333333,,,,
+VIVI_on_TRFU,Rock_2024,0.03525641,,,,
+VIVI_on_TRFU,Upper_Grid_2_2024,0.01927711,,,,
+VIVI_on_TRFU,Anu_2024,0.231698,,,,
+VIVI_on_TRFU,Quarry_1_2024,0.05400155,,,,
+VIVI_on_TRFU,Quarry_2_2024,0.2032967,,,,
+VIVI_on_TRFU,Quarry_3_2024,0.1522027,,,,
+VIVI_on_TRFU,Quarry_4_2024,0.03950617,,,,
+VIVI_on_TRFU,Quarry_5_2024,0.003350084,,,,
+VIVI_on_TRFU,Goatgrass_2024,0.1796878,,,,
+VIVI_on_TRFU,South_Goatgrass_2024,0.2646863,,,,
+VIVI_on_TRFU,Aikawa_2024,0,,,,
+VIVI_on_TRFU,Felch_2024,0.3298985,,,,
+VIVI_on_TRFU,Coyote_24,0.6381596,,,,
+Ind_Contribution_VIVI,Bertha_2022,-0.78214432,,,,
+Ind_Contribution_VIVI,Quarry_2022,-0.78021664,,,,
+Ind_Contribution_VIVI,Rock_2022,2.3880674,,,,
+Ind_Contribution_VIVI,Long_2022,4.38104256,,,,
+Ind_Contribution_VIVI,Goatgrass_2022,2.34862014,,,,
+Ind_Contribution_VIVI,Aikawa_2022,3.14677231,,,,
+Ind_Contribution_VIVI,Rock_2023,0.8108507,,,,
+Ind_Contribution_VIVI,Quarry1_2023,1.7566685,,,,
+Ind_Contribution_VIVI,Bertha_2023,3.3486721,,,,
+Ind_Contribution_VIVI,Rock_2024,0.7466844,,,,
+Ind_Contribution_VIVI,Upper_Grid_2_2024,1.1722598,,,,
+Ind_Contribution_VIVI,Goatgrass_2024,NA,,,,
+Ind_Contribution_VIVI,Felch_2024,0.8881326,,,,
+Ind_Contribution_VIVI,Coyote_24,2.41341805,,,,
+Ind_Contribution_VIVI,Aikawa_2024,0.8050443,,,,
+Ind_Contribution_VIVI,Anu_2024,1.34747168,,,,
+Ind_Contribution_VIVI,Quarry_1_2024,0.1186426,,,,
+Ind_Contribution_VIVI,Quarry_2_2024,1.434584,,,,
+Ind_Contribution_VIVI,Quarry_3_2024,2.5028601,,,,
+Ind_Contribution_VIVI,Quarry_4_2024,2.01811923,,,,
+Ind_Contribution_VIVI,Quarry_5_2024,-0.5511136,,,,
+Ind_Contribution_TRFU,Bertha_2022,-1.3556305,,,,
+Ind_Contribution_TRFU,Quarry_2022,3.51222188,,,,
+Ind_Contribution_TRFU,Rock_2022,1.0893776,,,,
+Ind_Contribution_TRFU,Long_2022,3.40756589,,,,
+Ind_Contribution_TRFU,Goatgrass_2022,1.66511125,,,,
+Ind_Contribution_TRFU,Aikawa_2022,5.75986416,,,,
+Ind_Contribution_TRFU,Rock_2023,-0.5379677,,,,
+Ind_Contribution_TRFU,Quarry1_2023,1.4637926,,,,
+Ind_Contribution_TRFU,Bertha_2023,0.5726574,,,,
+Ind_Contribution_TRFU,Rock_2024,2.0394519,,,,
+Ind_Contribution_TRFU,Upper_Grid_2_2024,0.6646785,,,,
+Ind_Contribution_TRFU,Goatgrass_2024,NA,,,,
+Ind_Contribution_TRFU,Felch_2024,-0.2311737,,,,
+Ind_Contribution_TRFU,Coyote_24,1.1487481,,,,
+Ind_Contribution_TRFU,Aikawa_2024,-1.3295435,,,,
+Ind_Contribution_TRFU,Anu_2024,3.99772061,,,,
+Ind_Contribution_TRFU,Quarry_1_2024,-0.7756569,,,,
+Ind_Contribution_TRFU,Quarry_2_2024,0.6303974,,,,
+Ind_Contribution_TRFU,Quarry_3_2024,2.215972,,,,
+Ind_Contribution_TRFU,Quarry_4_2024,1.63150456,,,,
+Ind_Contribution_TRFU,Quarry_5_2024,3.4334342,,,,
+Ind_Contribution_TRFU,South_Goatgrass_2024,-0.208669,,,,
+Ind_Contribution_VIVI,South_Goatgrass_2024,-0.7001362,,,,
+TRFU_on_VIVI,Bertha_2022,0.1551357,,,,
+TRFU_on_VIVI,Goatgrass_2022,0.03555221,,,,
+TRFU_on_VIVI,Long_2022,0.1591942,,,,
+TRFU_on_VIVI,Rock_2022,0.4433754,,,,
+TRFU_on_VIVI,Aikawa_2022,0.6020044,,,,
+TRFU_on_VIVI,Quarry_2022,0.5297013,,,,
+TRFU_on_VIVI,Bertha_2023,0,,,,
+TRFU_on_VIVI,Rock_2023,0.01149425,,,,
+TRFU_on_VIVI,Rock_2024,0.04700855,,,,
+TRFU_on_VIVI,Upper_Grid_2_2024,0.02191781,,,,
+TRFU_on_VIVI,Anu_2024,0.2745621,,,,
+TRFU_on_VIVI,Quarry_1_2024,0.04387626,,,,
+TRFU_on_VIVI,Quarry_2_2024,0.03500473,,,,
+TRFU_on_VIVI,Quarry_3_2024,0.09328554,,,,
+TRFU_on_VIVI,Quarry_4_2024,0.08888889,,,,
+TRFU_on_VIVI,Quarry_5_2024,0.1111111,,,,
+TRFU_on_VIVI,Goatgrass_2024,0.1475049,,,,
+TRFU_on_VIVI,South_Goatgrass_2024,0.01137324,,,,
+TRFU_on_VIVI,Aikawa_2024,0,,,,
+TRFU_on_VIVI,Felch_2024,0.1832769,,,,
+TRFU_on_VIVI,Coyote_24,0.02063016,,,,
