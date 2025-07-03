@@ -8,7 +8,7 @@
 %   -simulations are performed over the range of user specified networks 
 %   ranging from 1-1200
 %
-
+%% Updated 6-28-25 Taran: corrected the serpentine and non-serpentine network
 %% Updated 6-24-15 Becca: added code to convert to binary matrices 
 
 %% Updated 2/19/2025--Becca: fixed typos in set_initial_state.m and ran with all of the networks together 
@@ -68,7 +68,10 @@ mkdir('./data')
         
         % Version 3: Nonserpentine only (Only non-serp rows kept, others set to zero)
         nonserpentine_network = network_data;
-        nonserpentine_network(~non_serp_mask, :) = 0;
+
+        %nonserpentine_network(~non_serp_mask, :) = 0;
+        nonserpentine_network(serpentine_mask, :) = 0;
+
         
         % List of data versions for simulation
         data_versions = {full_network, serpentine_network, nonserpentine_network};
