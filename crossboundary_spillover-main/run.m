@@ -68,7 +68,7 @@ mkdir('./data')
         
         % Version 3: Nonserpentine only (Only non-serp rows kept, others set to zero)
         nonserpentine_network = network_data;
-        nonserpentine_network(non_serp_mask, :) = 0;
+        nonserpentine_network(~non_serp_mask, :) = 0;
         
         % List of data versions for simulation
         data_versions = {full_network, serpentine_network, nonserpentine_network};
