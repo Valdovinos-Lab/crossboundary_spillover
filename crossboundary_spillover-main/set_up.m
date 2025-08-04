@@ -4,7 +4,7 @@ global J_pattern network_data non_serp_mask serpentine_mask
 
 data=network_data;
 % get information from file name
-death_case = file_name(2);
+death_case = 3;
 
 % PLANT PARAMETERS
 

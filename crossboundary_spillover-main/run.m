@@ -7,7 +7,7 @@
 %   (random) because results are qualtiatively similar for each algorithm
 %   -simulations are performed over the range of user specified networks 
 %   ranging from 1-1200
-%
+% Updated 8-4-25: Becca: run simulations with cleaned up emprirical data
 %% Updated 6-28-25 Taran: corrected the serpentine and non-serpentine network
 %% Updated 6-24-15 Becca: added code to convert to binary matrices 
 
@@ -29,111 +29,95 @@
 % Run a suite of simulations
 function [] = run()
 
- global J_pattern network_data non_serp_mask serpentine_mask version_index
-mkdir('./data')
+    global J_pattern network_data non_serp_mask serpentine_mask version_index
 
-    % List of network CSV files
-    networks = {'Aikawa_2022_summer.csv', "Aikawa_2022.csv", "Aikawa_2024.csv", "Anu_2024.csv", "Banana_2022.csv", "Bertha_2022_summer.csv", "Bertha_2022.csv", "Bertha_2023_summer.csv", "Bertha_2023.csv", "Bertha_2024.csv", "Coyote_24.csv", "Felch_2024.csv", "Goatgrass_2022.csv", "Goatgrass_2024.csv", "Long_2022.csv", "Lower_Banana_2022.csv", "Pond_2022csv.csv", "Pond_2023_.csv", "Pond_2024.csv", "Quarry_1_2024.csv", "Quarry_2_2024.csv", "Quarry_3_2024.csv", "Quarry_4_2024.csv", "Quarry_5_2024.csv", "Quarry_2022.csv", "Quarry_Close_2022.csv", "Quarry_Close_2023.csv", "Quarry_Close_2024.csv", "Quarry_Far_2022.csv", "Quarry_Far_2023.csv", "Quarry_Far_2024.csv", "Quarry1_2023.csv", "Randy_2022.csv", "Randy_2023.csv", "Rock_2022.csv", "Rock_2023.csv", "Rock_2024.csv", "South_Goatgrass_2024.csv", "Upper_Grid_2_2024.csv", "Vineyard_2022.csv", "Vineyard_2024.csv"  };  % Use one network as a test 
-%networks = {'Aikawa_2022_summer.csv'} for testing
+    % Make sure output directory exists
+    mkdir('./data')
+
+    % Load in input networks of empirical data 
+    network_dir = 'input_networks';  
+    network_structs = dir(fullfile(network_dir, '*.csv'));
+    networks = fullfile({network_structs.folder}, {network_structs.name});
+
     for network_index = 1:length(networks)
         network_file = networks{network_index};
-        
-        % Read the entire CSV as a table
-        tbl = readtable(network_file, 'ReadRowNames', true);
 
-        % Extract species names (row identifiers)
-        row_ids = tbl.Properties.RowNames;
+        % Read the CSV as a table, preserving original names
+        tbl = readtable(network_file, 'ReadRowNames', true, 'VariableNamingRule', 'preserve');
 
-        % Extract column species names (header row)
-        col_ids = tbl.Properties.VariableNames;
-        col_ids2=col_ids';
-        % Extract numeric data (the core of the matrix)
+        % Extract species names
+        row_ids = tbl.Properties.RowNames;          % Plant species (rows)
+        col_ids = tbl.Properties.VariableNames;     % Animal species (columns)
+        col_ids2 = col_ids';
+
+        % Convert table data to numeric matrix
         network_data = table2array(tbl);
-        
-        % Define non-serpentine species rows
+
+        % Define non-serpentine plant species 
         non_serp_rows = {'ASER', 'VIVI', 'CESO', 'MEIN', 'PHAQ', 'ANAR', 'AMME', ...
-                         'ERCI', 'mustard', 'yellow_aster', 'dandelion', 'MEPO', 'SEVU'};
-        
-        % Create a mask for serpentine and non-serpentine species
+                         'ERCI', 'HIIN', 'Asteraceae sp.', 'TAOF', 'MEPO', 'SEVU'};
+
+        % Create masks for serpentine vsnon-serpentine plants
         non_serp_mask = ismember(row_ids, non_serp_rows);
-        serpentine_mask = ~non_serp_mask;  % Serpentine is the opposite of non-serpentine
+        serpentine_mask = ~non_serp_mask;
 
-  
-        % Create three versions of the network data
-        full_network = network_data;  % Version 1: Original
-        
-        % Version 2: Serpentine (Non-serp rows set to zero)
+        % Create three versions of the network matrix
+        full_network = network_data;  % Original full network
         serpentine_network = network_data;
-        serpentine_network(~serpentine_mask, :) = 0;
-        
-        % Version 3: Nonserpentine only (Only non-serp rows kept, others set to zero)
+        serpentine_network(~serpentine_mask, :) = 0;  % Zero out non-serpentine rows
         nonserpentine_network = network_data;
+        nonserpentine_network(serpentine_mask, :) = 0; % Zero out serpentine rows
 
-        %nonserpentine_network(~non_serp_mask, :) = 0;
-        nonserpentine_network(serpentine_mask, :) = 0;
-
-        
-        % List of data versions for simulation
         data_versions = {full_network, serpentine_network, nonserpentine_network};
         version_names = {'full_network', 'serpentine_network', 'nonserpentine_network'};
-        
-        % Run simulation for each data version
-        for version_index =1:3 % 1%:length(data_versions)
+
+        for version_index = 1:3
             data = data_versions{version_index};
-            data = double(data > 0);  % Convert networks to binary (0/1) matrix
+            data = double(data > 0);  % Convert to binary presence/absence matrix
             version_name = version_names{version_index};
-            
-            % Specify mortality case 
-            death_case = 3;
-            
-            % Construct file name
-           file_name = sprintf('%s_%s_case%d', erase(network_file, '.csv'), version_name, death_case);
-              file_name = [network_index, death_case];
-                % Run simulation for full network (both serpentine and non-serpentine)
-                [Alpha, P, A] = run_inv_PC(file_name, data);
-           
-            
-            % Save results
-            %plant_data = [full(P{1}), full(P{2})];
-            %animal_data = [full(A{1}), full(A{2})];
-            %alpha_data = [full(Alpha{1}), full(Alpha{2})];
 
-   %  plant_data = [full(P{1})]; % Start with the first element
-%for i = 2:length(P)
-    %plant_data = [plant_data, full(P{i})]; % Concatenate each full matrix column-wise
-%end
+            death_case = 3;  % low plant and pollinator mortality 
 
-%  animal_data = [full(A{1})]; 
-% for i = 2:length(A)
- %   animal_data = [animal_data, full(A{i})]; % Concatenate each full matrix column-wise
-%end
+            % filename for output files 
+            [~, base_name, ~] = fileparts(network_file);
+            fname = sprintf('%s_%s_case%d', base_name, version_name, death_case);
 
-%alpha_data = [full(Alpha{1})]; % Start with the first element
-%for i = 2:length(Alpha)
- %   alpha_data = [alpha_data, full(Alpha{i})]; % Concatenate each full matrix column-wise
-%end
+            % Run your simulation function
+            [Alpha, P, A] = run_inv_PC(fname, data);
 
+            % Concatenate output matrices horizontally
+            plant_data = full(P{1});
+            for i = 2:length(P)
+                plant_data = [plant_data, full(P{i})];
+            end
 
-            
-            plant_data_cell = [row_ids, num2cell(plant_data)];
-            animal_data_cell = [col_ids2, num2cell(animal_data)];
+            animal_data = full(A{1});
+            for i = 2:length(A)
+                animal_data = [animal_data, full(A{i})];
+            end
 
-            
-            % Write data to CSV files
-            writecell(plant_data_cell, sprintf('data/P_%s_version%d.csv', erase(network_file, '.csv'), version_index));
-            writecell(animal_data_cell, sprintf('data/A_%s_version%d.csv', erase(network_file, '.csv'), version_index));
-            writematrix(alpha_data, sprintf('data/Alpha_%s_version%d.csv', erase(network_file, '.csv'), version_index));
-            
-           
-            %writematrix(plant_data, sprintf('data/P_%s_version%d.csv', erase(network_file, '.csv'), version_index));
-            %writematrix(animal_data, sprintf('data/A_%s_version%d.csv', erase(network_file, '.csv'), version_index));
-      
-            %writematrix(plant_data, sprintf('data/P_%d_version%d.csv', network_index,version_index));
-            %writematrix(animal_data, sprintf('data/A_%d_version%d.csv', network_index, version_index));
-            %writematrix(alpha_data, sprintf('data/Alpha_%d_version%d.csv', network_index, version_index));
+            alpha_data = full(Alpha{1});
+            for i = 2:length(Alpha)
+                alpha_data = [alpha_data, full(Alpha{i})];
+            end
+
+            % Prepare plant data 
+% Prepare plant data
+plant_data_cell = [row_ids, num2cell(plant_data)];
+
+% Prepare animal data
+animal_data_cell = [col_ids2, num2cell(animal_data)];
+
+% Write results to CSV files in the ./data directory
+writecell(plant_data_cell, fullfile('data', sprintf('P_%s_version%d.csv', fname, version_index)));
+writecell(animal_data_cell, fullfile('data', sprintf('A_%s_version%d.csv', fname, version_index)));
+writematrix(alpha_data, fullfile('data', sprintf('Alpha_%s_version%d.csv', fname, version_index)));
+
         end
     end
 end
+
+
 
 
           
