@@ -160,9 +160,10 @@ plots_AF <- lapply(seq_along(responses), function(i) {
     geom_jitter(position = position_jitterdodge(jitter.width = 0.15, dodge.width = 0.75), alpha = 0.5) +
     theme_classic() +
     scale_color_viridis_d() +
-    scale_size_continuous(range = c(2, 6)) +
+    scale_size_continuous(range = c(2, 6), name = "Network size\n(# plants)") +
+  
     labs(x = NULL, y = y_labels[i], title = paste0(y_labels[i], " (", "AF", ")"))
-})
+}) 
 
 # Create plots for AF = 2 ("No AF")
 plots_NoAF <- lapply(seq_along(responses), function(i) {
@@ -172,38 +173,233 @@ plots_NoAF <- lapply(seq_along(responses), function(i) {
     geom_jitter(position = position_jitterdodge(jitter.width = 0.15, dodge.width = 0.75), alpha = 0.5) +
     theme_classic() +
     scale_color_viridis_d() +
-    scale_size_continuous(range = c(2, 6)) +
+    scale_size_continuous(range = c(2, 6), name = "Network size\n(# plants)") +
     labs(x = NULL, y = y_labels[i], title = paste0(y_labels[i], " (", "No AF", ")"))
-})
+}) 
 
 # Combine into 2 rows x 3 columns (AF row on top)
-fig_2 <- (plots_AF[[1]] + plots_AF[[3]] + plots_AF[[2]] +
-                        plots_NoAF[[1]] + plots_NoAF[[3]] + plots_NoAF[[2]]) +
+fig_2 <- (plots_AF[[2]] + plots_AF[[1]] + plots_AF[[3]] +
+            plots_NoAF[[2]] + plots_NoAF[[1]] + plots_NoAF[[3]]) +
   plot_layout(ncol = 3, nrow = 2, guides = "collect") +
-  plot_annotation(tag_levels = "A") &  # use & here for theme applied to all plots
+  plot_annotation(tag_levels = "A") &
   theme(
     legend.position = "bottom",
-    plot.tag = element_text(size = 14, face = "bold")  # style the letters
-  )
-
+    legend.background = element_rect(fill = "white", color = NA),
+    plot.tag = element_text(size = 14, face = "bold")
+  ) 
 # Save high-resolution PDF
 ggsave("fig_2.pdf", fig_2, width = 15, height = 8, dpi = 600)
 
+############## Figure 3 Network size  ##############################
 
 
-######### Exploratory Figures #################
-######### Simulated Pollinator Abundance ##########
-animal_summary %>%
-  mutate(version = factor(version, levels = c(1, 2, 3), labels = c("Both", "S", "NS"))) %>%
-  ggplot(aes(x = version, y = animal_abundance, color = version)) +
-  geom_boxplot(alpha = 0.7) +
-  geom_jitter(width = 0.15, alpha = 0.2, size = 1.5) +  # show data points
-  theme_classic() +
-  scale_color_viridis_d() +
-  labs(x = "Version", y = "Animal Abundance", color = "Version") 
-#+ facet_wrap(~site_year)
-#+ facet_wrap(~AF)
-## trend is consistent across sites and AF
+plant_long <- left_join(plant_long, rich, by = "site_year")
+
+
+library(dplyr)
+library(ggplot2)
+library(viridis)
+library(patchwork)
+
+# List of responses and y-axis labels
+responses <- c("plant_abundance", "visit_quanity", "visit_quality")
+y_labels <- c("Mean Plant Abundance", "Mean Visit Quantity", "Mean Visit Quality")
+
+# Function to create a single panel
+make_panel <- function(data, response_var, y_label) {
+  data %>%
+    group_by(AF, version, Soil_Type, network_name) %>%
+    summarise(
+      value = mean(.data[[response_var]], na.rm = TRUE),
+      n_plants = mean(ifelse(Soil_Type == "Serpentine", n_plants_serp, n_plants_nonserp), na.rm = TRUE),
+      .groups = "drop"
+    ) %>%
+    filter(
+      (Soil_Type == "Serpentine" & version %in% c(1, 2)) |  # Both, S
+        (Soil_Type == "Non-Serpentine" & version %in% c(1, 3))  # Both, NS
+    ) %>%
+    mutate(
+      version = factor(version, levels = c(1, 2, 3), labels = c("Both", "S", "NS")),
+      AF = factor(AF, levels = c(1, 2), labels = c("AF", "No AF"))
+    ) %>%
+    ggplot(aes(x = n_plants, y = value, color = version, shape = AF)) +
+    geom_point(size = 3, alpha = 0.7) +
+    geom_smooth(aes(group = version), method = "lm", se = FALSE) +
+    theme_classic() +
+    scale_color_viridis_d() +
+    facet_wrap(~Soil_Type*AF) +
+    labs(x = "Network size (# plants)", y = y_label, color = "Version", shape = "AF")
+}
+
+# Generate plots
+plot_list <- lapply(seq_along(responses), function(i) {
+  make_panel(plant_long, responses[i], y_labels[i])
+})
+
+# Combine into one figure (letters A, B, C)
+fig_3 <- plot_list[[1]] + plot_list[[2]] + plot_list[[3]] +
+  plot_layout(ncol = 1, nrow = 3, guides = "collect") +
+  plot_annotation(tag_levels = "A") &
+  theme(
+    legend.position = "bottom",
+    legend.background = element_rect(fill = "white", color = NA),
+    plot.tag = element_text(size = 14, face = "bold")
+  )
+
+# Save high-resolution PDF
+ggsave("fig_3.pdf", fig_3, width = 10, height = 18, dpi = 600)
+
+
+######### Stats on simulated data ###########
+library(dplyr)
+library(lme4)
+library(broom.mixed)
+library(flextable)
+library(officer)
+
+# --------------------------
+# 1. Plant-level (Figure 2)
+# --------------------------
+plant_df <- plant_long %>%
+  filter(
+    (Soil_Type == "Serpentine" & version %in% c(1, 2)) |
+      (Soil_Type == "Non-Serpentine" & version %in% c(1, 3))
+  ) %>%
+  mutate(
+    version = factor(version, levels = c(1, 2, 3), labels = c("Both", "S", "NS")),
+    AF = factor(AF, levels = c(1, 2), labels = c("AF", "No AF")),
+    n_plants = ifelse(Soil_Type == "Serpentine", n_plants_serp, n_plants_nonserp)
+  )
+
+# Function to fit LMMs with AF
+fit_lmm <- function(data, response_var) {
+  formula <- as.formula(paste0(response_var, " ~ n_plants * version * AF + (1|PLANT) + (1|network_name)"))
+  model <- lmer(formula, data = data)
+  
+  # Assumptions check
+  check <- list(
+    normality = shapiro.test(residuals(model)),
+    homoscedasticity = plot(model) # visual inspection
+  )
+  
+  return(list(model = model, assumptions = check, summary = summary(model)))
+}
+
+# Serpentine vs Non-serpentine
+serp_plants <- filter(plant_df, Soil_Type == "Serpentine")
+ns_plants <- filter(plant_df, Soil_Type == "Non-Serpentine")
+
+# Plant-level models
+serp_abund_model <- fit_lmm(serp_plants, "plant_abundance")
+serp_quality_model <- fit_lmm(serp_plants, "visit_quality")
+serp_quant_model <- fit_lmm(serp_plants, "visit_quanity")
+
+ns_abund_model <- fit_lmm(ns_plants, "plant_abundance")
+ns_quality_model <- fit_lmm(ns_plants, "visit_quality")
+ns_quant_model <- fit_lmm(ns_plants, "visit_quanity")
+
+# --------------------------
+# 2. Network-level means (Figure 3)
+# --------------------------
+mean_df <- plant_long %>%
+  group_by(AF, version, Soil_Type, network_name) %>%
+  summarise(
+    plant_abundance = mean(plant_abundance, na.rm = TRUE),
+    visit_quanity = mean(visit_quanity, na.rm = TRUE),
+    visit_quality = mean(visit_quality, na.rm = TRUE),
+    n_plants = mean(ifelse(Soil_Type == "Serpentine", n_plants_serp, n_plants_nonserp), na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  filter(
+    (Soil_Type == "Serpentine" & version %in% c(1, 2)) |
+      (Soil_Type == "Non-Serpentine" & version %in% c(1, 3))
+  ) %>%
+  mutate(
+    version = factor(version, levels = c(1, 2, 3), labels = c("Both", "S", "NS")),
+    AF = factor(AF, levels = c(1, 2), labels = c("AF", "No AF"))
+  )
+
+# Network-level LMM
+fit_lmm_mean <- function(data, response_var) {
+  formula <- as.formula(paste0(response_var, " ~ n_plants * version * AF + (1|network_name)"))
+  model <- lmer(formula, data = data)
+  
+  check <- list(
+    normality = shapiro.test(residuals(model)),
+    homoscedasticity = plot(model)
+  )
+  
+  return(list(model = model, assumptions = check, summary = summary(model)))
+}
+
+serp_abund_mean <- fit_lmm_mean(filter(mean_df, Soil_Type == "Serpentine"), "plant_abundance")
+serp_quality_mean <- fit_lmm_mean(filter(mean_df, Soil_Type == "Serpentine"), "visit_quality")
+serp_quant_mean <- fit_lmm_mean(filter(mean_df, Soil_Type == "Serpentine"), "visit_quanity")
+
+ns_abund_mean <- fit_lmm_mean(filter(mean_df, Soil_Type == "Non-Serpentine"), "plant_abundance")
+ns_quality_mean <- fit_lmm_mean(filter(mean_df, Soil_Type == "Non-Serpentine"), "visit_quality")
+ns_quant_mean <- fit_lmm_mean(filter(mean_df, Soil_Type == "Non-Serpentine"), "visit_quanity")
+
+# --------------------------
+# 3. Tidy models for Word
+# --------------------------
+tidy_model_summary <- function(model, model_name, level, soil) {
+  broom.mixed::tidy(model, effects = "fixed") %>%
+    mutate(
+      model = model_name,
+      level = level,
+      soil = soil
+    )
+}
+
+plant_summaries <- bind_rows(
+  tidy_model_summary(serp_abund_model$model, "Plant Abundance", "Plant-level", "Serpentine"),
+  tidy_model_summary(serp_quality_model$model, "Visit Quality", "Plant-level", "Serpentine"),
+  tidy_model_summary(serp_quant_model$model, "Visit Quantity", "Plant-level", "Serpentine"),
+  tidy_model_summary(ns_abund_model$model, "Plant Abundance", "Plant-level", "Non-Serpentine"),
+  tidy_model_summary(ns_quality_model$model, "Visit Quality", "Plant-level", "Non-Serpentine"),
+  tidy_model_summary(ns_quant_model$model, "Visit Quantity", "Plant-level", "Non-Serpentine")
+)
+
+network_summaries <- bind_rows(
+  tidy_model_summary(serp_abund_mean$model, "Plant Abundance", "Network-level", "Serpentine"),
+  tidy_model_summary(serp_quality_mean$model, "Visit Quality", "Network-level", "Serpentine"),
+  tidy_model_summary(serp_quant_mean$model, "Visit Quantity", "Network-level", "Serpentine"),
+  tidy_model_summary(ns_abund_mean$model, "Plant Abundance", "Network-level", "Non-Serpentine"),
+  tidy_model_summary(ns_quality_mean$model, "Visit Quality", "Network-level", "Non-Serpentine"),
+  tidy_model_summary(ns_quant_mean$model, "Visit Quantity", "Network-level", "Non-Serpentine")
+)
+
+all_model_summary <- bind_rows(plant_summaries, network_summaries) %>%
+  select(model, level, soil, term, estimate, std.error, statistic, p.value) %>%
+  arrange(level, soil, model)
+
+# --------------------------
+# 4. Export as Word
+# --------------------------
+ft <- flextable(all_model_summary) %>%
+  set_header_labels(
+    model = "Response",
+    level = "Data Level",
+    soil = "Soil Type",
+    term = "Fixed Effect",
+    estimate = "Estimate",
+    std.error = "SE",
+    statistic = "t-value",
+    p.value = "p-value"
+  ) %>%
+  # Round numeric columns to 2 decimals
+  colformat_double(j = c("estimate", "std.error", "statistic", "p.value"), digits = 2) %>%
+  autofit() %>%
+  theme_vanilla()
+
+
+doc <- read_docx() %>%
+  body_add_par("Linear Mixed-Effects Model Summary", style = "heading 1") %>%
+  body_add_flextable(ft)
+
+print(doc, target = "LMM_summary.docx")
+
 
 ######### Simulated Pollinator Abundance ##########
 animal_summary_spillover_only %>%
