@@ -2,7 +2,7 @@
 #### Code for visualizing matlab outputs into R dataframes #####
 ##### for Becca and Taran spillover project #######
 ###### date created: 3-17-2025 ###########
-######### date last modified: 9-8-2025 #######
+######### date last modified: 10-22-2025 #######
 ###### analyze simulation and empirical data #######
 library(patchwork)
 source("analysis.R")
@@ -61,7 +61,7 @@ p1 <- plant_summary_full %>%
       version == "NS"   ~ n_plants_nonserp
     )
   ) %>%
-  ggplot(aes(x = version, y = visit_quanity, color = version, size = n_plants)) +
+  ggplot(aes(x = version, y = visit_quanity, color = version)) + #size = n_plants to size dots by networks
   geom_boxplot(alpha = 0.7, outlier.shape = NA) +
   geom_jitter(width = 0.15, alpha = 0.5) +
   theme_classic() +
@@ -81,7 +81,7 @@ p2 <- plant_summary_full %>%
       version == "NS"   ~ n_plants_nonserp
     )
   ) %>%
-  ggplot(aes(x = version, y = visit_quanity, color = version, size = n_plants)) +
+  ggplot(aes(x = version, y = visit_quanity, color = version)) +
   geom_boxplot(alpha = 0.7, outlier.shape = NA) +
   geom_jitter(width = 0.15, alpha = 0.5) +
   theme_classic() +
@@ -99,7 +99,7 @@ p3 <- total_visits_long_full %>%
       visit_type == "NS"   ~ n_plants_nonserp
     )
   ) %>%
-  ggplot(aes(x = visit_type, y = total_visits, color = visit_type, size = n_plants)) +
+  ggplot(aes(x = visit_type, y = total_visits, color = visit_type)) +
   geom_boxplot(alpha = 0.7, outlier.shape = NA) +
   geom_jitter(width = 0.15, alpha = 0.5) +
   theme_classic() +
@@ -155,7 +155,7 @@ y_labels <- c("Visit Quantity", "Plant Abundance", "Visit Quality")
 # Create plots for AF = 1 ("AF")
 plots_AF <- lapply(seq_along(responses), function(i) {
   prepare_plot_data(plant_long, responses[i], AF_value = 1, AF_label = "AF") %>%
-    ggplot(aes(x = x_label, y = .data[[responses[i]]], color = version, size = n_plants)) +
+    ggplot(aes(x = x_label, y = .data[[responses[i]]], color = version)) +
     geom_boxplot(alpha = 0.7, position = position_dodge(width = 0.75), outlier.shape = NA) +
     geom_jitter(position = position_jitterdodge(jitter.width = 0.15, dodge.width = 0.75), alpha = 0.5) +
     theme_classic() +
@@ -168,7 +168,7 @@ plots_AF <- lapply(seq_along(responses), function(i) {
 # Create plots for AF = 2 ("No AF")
 plots_NoAF <- lapply(seq_along(responses), function(i) {
   prepare_plot_data(plant_long, responses[i], AF_value = 2, AF_label = "No AF") %>%
-    ggplot(aes(x = x_label, y = .data[[responses[i]]], color = version, size = n_plants)) +
+    ggplot(aes(x = x_label, y = .data[[responses[i]]], color = version)) +
     geom_boxplot(alpha = 0.7, position = position_dodge(width = 0.75), outlier.shape = NA) +
     geom_jitter(position = position_jitterdodge(jitter.width = 0.15, dodge.width = 0.75), alpha = 0.5) +
     theme_classic() +
@@ -680,3 +680,10 @@ spillover_animal_plot_noAF <- animal_long_full %>% filter(full_degree > 0) %>% f
   facet_wrap(~ARTH, scales = "free_y")
 
 ggsave("animal_abundance_by_species_spillover_noAF.pdf", plot = spillover_animal_plot_noAF, width = 24, height = 20)
+
+###### info about size #####
+mean(plant_summary_full$n_plants_serp, na.rm = TRUE) #9.127273
+mean(plant_summary_full$n_plants_nonserp, na.rm = TRUE) #1.527273
+
+range(plant_summary_full$n_plants_serp, na.rm = TRUE) #1-26
+range(plant_summary_full$n_plants_nonserp, na.rm = TRUE) #0-4
