@@ -2,7 +2,7 @@
 #### Code for conceptual figure #####
 ##### code by Becca Nelson  #######
 ###### date created: 10-29-2025 ###########
-######### date last modified: 10-29-2025 #######
+######### date last modified: 10-31-2025 #######
 ###### create conceptual figure of simulation design #######
 
 
@@ -101,7 +101,7 @@ p <- ggplot() +
   geom_vline(xintercept = 2.5, linetype = "dashed", color = "gray40") +
   annotate("text", x = 1.5, y = 13, label = "Serpentine (S)", size = 6, color = "#1f78b4", vjust = 0) +
 annotate("text", x = 3.5, y = 13, label = "Non-serpentine (NS)", size = 6, color = "#ffcc00", vjust = 0)+
-  annotate("text", x = 2.5, y = -2, label = "Both / Spillover", size = 6, color = "#984ea3", vjust = 1) +
+  annotate("text", x = 2.5, y = -2, label = "Full", size = 6, color = "#984ea3", vjust = 1) +
   scale_color_manual(values = cols, guide = "none") +
   theme_void() +
   theme(
@@ -200,7 +200,7 @@ p <- ggplot() +
   geom_vline(xintercept = 2.5, linetype = "dashed", color = "gray40") +
   annotate("text", x = 1.5, y = 13, label = "Serpentine (S)", size = 6, color = "#1f78b4", vjust = 0) +
   annotate("text", x = 3.5, y = 13, label = "Non-serpentine (NS)", size = 6, color = "#ffcc00", vjust = 0) +
-  annotate("text", x = 2.5, y = -2, label = "Both / Spillover", size = 6, color = "#984ea3", vjust = 1) +
+  annotate("text", x = 2.5, y = -2, label = "Full", size = 6, color = "#984ea3", vjust = 1) +
 
   scale_color_manual(values = cols, guide = "none") +
   theme_void() +
