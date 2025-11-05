@@ -18,6 +18,10 @@ plant_abund_22 <- read.csv("plant_abund_spring22.csv")
 plant_abund_23 <- read.csv("plant_abund_spring23.csv")
 plant_abund_24 <- read.csv("floral_abund_24.csv")
 
+summer_abund_22 <- read.csv("floral_abund_summer_22.csv")
+summer_abund_23 <- read.csv("floral_abund_summer_23.csv")
+summer_abund_24 <- read.csv("floral_abund_summer_24.csv")
+
 
 ### combine floral abundance data ########
 
@@ -26,16 +30,25 @@ plant_abund_23$Transect <- plant_abund_23$Tranesect
 plant_abund_22$Floral_Abundance <- plant_abund_22$Estimated_Abundance
 plant_abund_22$PLANT <- plant_abund_22$Species
 
+summer_abund_23$Floral_Abundance <- summer_abund_23$Abundance
+summer_abund_23$PLANT <- summer_abund_23$Species
+summer_abund_22$PLANT <- summer_abund_22$Plant_Species
+
 plant_abund_22 <- plant_abund_22 %>% dplyr::select(Year, Month, Day, Transect, Site, PLANT, Floral_Abundance)
 plant_abund_23 <- plant_abund_23 %>% dplyr::select(Year, Month, Day, Transect, Site, PLANT, Floral_Abundance)
 plant_abund_24 <- plant_abund_24 %>% dplyr::select(Year, Month, Day, Transect, Site, PLANT, Floral_Abundance)
 
+summer_abund_22 <- summer_abund_22 %>% dplyr::select(Year, Month, Day, Site, PLANT, Floral_Abundance)
+summer_abund_23 <- summer_abund_23 %>% dplyr::select(Year, Month, Day, Site, PLANT, Floral_Abundance)
+summer_abund_24 <- summer_abund_24 %>% dplyr::select(Year, Month, Day, Site, PLANT, Floral_Abundance)
+
 plant_abund <- rbind(plant_abund_22, plant_abund_23, plant_abund_24)
+summer_abund <- rbind(summer_abund_22, summer_abund_23, summer_abund_24)
 
 #site_richness <- plant_abund %>%  group_by(Site, Year) %>% summarize(Site_Plant_Richness = length(unique(PLANT))) 
 
 plant_abund$Floral_Abundance <- as.numeric(plant_abund$Floral_Abundance)
-
+summer_abund$Floral_Abundance <- as.numeric(summer_abund$Floral_Abundance)
 
 plant_abund <- plant_abund %>% mutate(Year = if_else(is.na(Year), 2024, Year)) %>% mutate(Month = if_else(is.na(Month), 4, Month)) 
 
@@ -50,6 +63,7 @@ plant_abund$Day <- as.numeric(plant_abund$Day)
 library(lubridate)
 ## make a date column that gives year, month, and day as a lubridate object
 plant_abund$date = ymd(paste(plant_abund$Year, "-", plant_abund$Month, "-", plant_abund$Day))
+summer_abund$date = ymd(paste(plant_abund$Year, "-", summer_abund$Month, "-", summer_abund$Day))
 
 ##### fix spelling and naming
 plant_abund$PLANT[plant_abund$PLANT == "Alium"] <- "ALAM"
