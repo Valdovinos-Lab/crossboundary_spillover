@@ -3,7 +3,7 @@
 ######## Clean and Process Empirical Floral Abundance Data #######
 ######## Code by Rebecca Nelson ###############
 ###### created: 9-8-25 #########################
-######### last updated: 11-4-25 ############
+######### last updated: 11-6-25 ############
 #################################################
 #process plant coverage (floral abundance counts) of empirical networks for use in simulation 
 
@@ -123,17 +123,70 @@ plant_abund$PLANT[plant_abund$PLANT ==    "pink-onion"   ] <- "ALAM"
 plant_abund$PLANT[plant_abund$PLANT ==    "butteregg"  ] <- "TRER" 
 plant_abund$PLANT[plant_abund$PLANT ==    "buttereggs"    ] <- "TRER" 
 
-
+summer_abund$PLANT[summer_abund$PLANT ==    "TRLA "      ] <- "TRLA" 
+summer_abund$PLANT[summer_abund$PLANT ==    "LERU"    ] <- "LERA" 
+summer_abund$PLANT[summer_abund$PLANT ==    "Toyon"     ] <- "HEAR" 
+summer_abund$PLANT[summer_abund$PLANT ==     "common_woolly"     ] <- "ERLA" 
+summer_abund$PLANT[summer_abund$PLANT ==    "common_wooly"    ] <- "ERLA" 
+summer_abund$PLANT[summer_abund$PLANT ==    "wooly sunflower" ] <- "ERLA" 
+summer_abund$PLANT[summer_abund$PLANT ==    "wooly_sun"     ] <- "ERLA" 
+summer_abund$PLANT[summer_abund$PLANT ==    "wooly/packeria"      ] <- "ERLA" 
+summer_abund$PLANT[summer_abund$PLANT ==    "packeri/common woolly"    ] <- "ERLA" 
+summer_abund$PLANT[summer_abund$PLANT ==    "buck"    ] <- "ERNU" 
+summer_abund$PLANT[summer_abund$PLANT ==    "buckwheat" ] <- "ERNU" 
+summer_abund$PLANT[summer_abund$PLANT ==    "bindweed"] <- "COAR" 
+summer_abund$PLANT[summer_abund$PLANT ==    "CUSCU" ] <- "CUCA" 
+summer_abund$PLANT[summer_abund$PLANT ==    "cuscuta"  ] <- "CUCA"
+summer_abund$PLANT[summer_abund$PLANT ==    "leatheroot" ] <- "HOMA" 
+summer_abund$PLANT[summer_abund$PLANT ==    "LATSER"  ] <- "LASE" 
+summer_abund$PLANT[summer_abund$PLANT ==    "lettuce"  ] <- "LASE" 
+summer_abund$PLANT[summer_abund$PLANT ==    "buckwheat" ] <- "ERNU" 
+summer_abund$PLANT[summer_abund$PLANT ==    "yarrow" ] <- "ACMI" 
+summer_abund$PLANT[summer_abund$PLANT ==    "it_thistle"  ] <- "CAPY" 
+summer_abund$PLANT[summer_abund$PLANT ==    "brodeia" ] <- "BREL" 
+summer_abund$PLANT[summer_abund$PLANT ==     "ERNU monkeyflower" ] <- "Erthyanthe_nudum"
+summer_abund$PLANT[summer_abund$PLANT ==     "monkeyflower" ] <- "Erthyanthe_nudum"
+summer_abund$PLANT[summer_abund$PLANT ==    "scarlet_pimpernel"   ] <- "ANAR" 
+summer_abund$PLANT[summer_abund$PLANT ==    "tall_fuzzy_white" ] <- "STAL"                             
+summer_abund$PLANT[summer_abund$PLANT ==    "fuzzy white"     ] <- "STAL" 
+summer_abund$PLANT[summer_abund$PLANT ==    "pink_lotus " ] <- "ACAM" 
+summer_abund$PLANT[summer_abund$PLANT ==     "Yampah"  ] <- "PEKE" 
+summer_abund$PLANT[summer_abund$PLANT ==       "yampah"  ] <- "PEKE" 
+summer_abund$PLANT[summer_abund$PLANT ==    "YAKE"  ] <- "PEKE" 
+summer_abund$PLANT[summer_abund$PLANT ==    "purpe_thistle" ] <- "SIMA" 
+summer_abund$PLANT[summer_abund$PLANT ==    "purple_thistle" ] <- "SIMA"                             
+summer_abund$PLANT[summer_abund$PLANT ==    "milk_thistle"   ] <- "SIMA"       
+summer_abund$PLANT[summer_abund$PLANT ==    "Snap"   ] <- "SAVE" 
+summer_abund$PLANT[summer_abund$PLANT ==    "snap"  ] <- "SAVE" 
+summer_abund$PLANT[summer_abund$PLANT ==    "wiry_snap"    ] <- "SAVE" 
+summer_abund$PLANT[summer_abund$PLANT ==  "white star " ] <- "HOCA" 
+summer_abund$PLANT[summer_abund$PLANT ==    "white_star"   ] <- "HOCA" 
+summer_abund$PLANT[summer_abund$PLANT ==    "white-daisy"  ] <- "LEVU" 
+summer_abund$PLANT[summer_abund$PLANT ==    "white_brodeia"  ] <- "TRHY"         
+summer_abund$PLANT[summer_abund$PLANT ==  "small_buckwheat"   ] <- "ERNU" 
+summer_abund$PLANT[summer_abund$PLANT ==     "small_buck"   ] <- "ENRU" 
+summer_abund$PLANT[summer_abund$PLANT ==   "white melilotus"] <- "MEAL" 
+summer_abund$PLANT[summer_abund$PLANT ==    "skullcap"] <- "SCSI"                          
+                                                    
 ## mean abundance by flower species across season
 total_floral_abund <- plant_abund %>% na.omit() %>%  group_by(Site, Year, date, PLANT) %>% summarize(floral_abundance_sum = sum(Floral_Abundance)) %>% group_by(Site, Year, PLANT)  %>% summarize(mean_floral_abundance = mean(floral_abundance_sum)) 
 ## totals floral abundance counts for each species across transects to get the total for a given site-year on each survey date and then takes the mean of those totals. 
 
+summer_floral_abund <- summer_abund %>% na.omit() %>%  group_by(Site, Year, Month, Day, PLANT) %>% summarize(floral_abundance_sum = sum(Floral_Abundance)) %>% group_by(Site, Year, PLANT)  %>% summarize(mean_floral_abundance = mean(floral_abundance_sum)) 
+
 ## filter out poorly resolved or identified plants 
 remove_species <- c("aster", "agag", "wooly_foot_apiaceae", "yellow_lomatium", "tall_pink", "pinkball", "whitepuff",  "4 Petal Yellow", "Arcgheopathis", "Clarkia", "coryopsis", "deathcamas", "yellow", "VIAM?", "yellow_aster", "Yellow Biscuit Root", "white_lomatium", "Yellow Lomatian", "riggioappus?", "small_yellow_aster", "Trcup_pink", "UNK_mustard" ,  "sunflower?",  "Round White Flower",  "round_yellow",  "Gumplant?", "dandelion", "dandlion", "dark_Yellow_Aster", "hairypink?",           "Hairypink?",  "gray_spurge",  "white_castilleja", "pale_spurge",  "fuzzy_ball",  "butter", "little_purple",       "Little-eared-phlox?")
+
+remove_species_summer <- c("UNK_yellow", "thin_purple", "Yellow_lotus", "BOMA", "HALI", "", "Clarkia", "ERN",  "ESCA?", "fluffy",  "yellow_lotus", "pink_white_fuzz", "puffy_white", "yellow_chicory", "white_fluff",                 "pink_epilobium", "skinny_purple", "tall_pink", "pink_willowherb")
+
 
 total_floral_abund_clean <- total_floral_abund %>%
   filter(!PLANT %in% remove_species)
 
 
+summer_floral_abund_clean <- summer_floral_abund %>%
+  filter(!PLANT %in% remove_species_summer)
+
 ## save cleaned data:
 write.csv(total_floral_abund_clean, "spring_empirical_coverage.csv", row.names = FALSE)
+write.csv(summer_floral_abund_clean, "summer_empirical_coverage.csv", row.names = FALSE)
