@@ -1,7 +1,7 @@
 ######## Plant Figure Code ######
 ######## updated version for newer MATLAB code ##############
 ###### date created: 3-17-2025 ###########
-######### date last modified: 11-7-2025 #######
+######### date last modified: 1-8-2026 #######
 ###### create plant figure #######
 
 source("rcode/updated_analysis.R")
@@ -46,7 +46,7 @@ fig_plant <- (p1 + p2 + p3) /
 
 fig_plant
 
-ggsave("plant_figure.pdf", fig_plant, width = 15, height = 12, dpi = 600)
+ggsave("plant_figure_new_model.pdf", fig_plant, width = 15, height = 12, dpi = 600)
 
 
 

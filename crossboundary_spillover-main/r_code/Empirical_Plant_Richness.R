@@ -3,11 +3,11 @@
 ######## Empirical Plant Richness Spillover Data-Theory Integration #######
 ######## Code by Rebecca Nelson ###############
 ###### created: 9-8-25 #########################
-######### last updated: 9-8-25 ############
+######### last updated: 1-8-26 ############
 #################################################
 ## generate plant richnesss info for empirical networks for comparison to simulation 
 
-source("Generate_Networks.R")
+source("r_code/Generate_Networks.R")
 
 library(tidyverse)
 

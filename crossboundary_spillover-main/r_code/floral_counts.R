@@ -3,7 +3,7 @@
 ######## Clean and Process Empirical Floral Abundance Data #######
 ######## Code by Rebecca Nelson ###############
 ###### created: 9-8-25 #########################
-######### last updated: 11-6-25 ############
+######### last updated: 1-8-25 ############
 #################################################
 #process plant coverage (floral abundance counts) of empirical networks for use in simulation 
 
@@ -14,13 +14,13 @@
 library(tidyverse)
 
 ## empirical floral abundance counts 
-plant_abund_22 <- read.csv("plant_abund_spring22.csv")
-plant_abund_23 <- read.csv("plant_abund_spring23.csv")
-plant_abund_24 <- read.csv("floral_abund_24.csv")
+plant_abund_22 <- read.csv("raw_data/plant_abund_spring22.csv")
+plant_abund_23 <- read.csv("raw_data/plant_abund_spring23.csv")
+plant_abund_24 <- read.csv("raw_data/floral_abund_24.csv")
 
-summer_abund_22 <- read.csv("floral_abund_summer_22.csv")
-summer_abund_23 <- read.csv("floral_abund_summer_23.csv")
-summer_abund_24 <- read.csv("floral_abund_summer_24.csv")
+summer_abund_22 <- read.csv("raw_data/floral_abund_summer_22.csv")
+summer_abund_23 <- read.csv("raw_data/floral_abund_summer_23.csv")
+summer_abund_24 <- read.csv("raw_data/floral_abund_summer_24.csv")
 
 
 ### combine floral abundance data ########
@@ -188,5 +188,5 @@ summer_floral_abund_clean <- summer_floral_abund %>%
   filter(!PLANT %in% remove_species_summer)
 
 ## save cleaned data:
-write.csv(total_floral_abund_clean, "spring_empirical_coverage.csv", row.names = FALSE)
-write.csv(summer_floral_abund_clean, "summer_empirical_coverage.csv", row.names = FALSE)
+write.csv(total_floral_abund_clean, "empirical_summaries/spring_empirical_coverage.csv", row.names = FALSE)
+write.csv(summer_floral_abund_clean, "empirical_summaries/summer_empirical_coverage.csv", row.names = FALSE)

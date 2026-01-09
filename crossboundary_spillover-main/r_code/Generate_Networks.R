@@ -3,7 +3,7 @@
 ######## Generate Networks Spillover Data-Theory Integration #######
 ######## Code by Rebecca Nelson ###############
 ###### created: 3-5-24 #########################
-######### last updated: 8-4-25 ############
+######### last updated: 1-8-26 ############
 #################################################
 ## generate empirical networks used as inputs for spillover modeling in matlab
 
@@ -17,8 +17,8 @@ require(lubridate)
 require(bipartite)
 ##### upload, clean, and merge data #####
 # visitation data
-spring <- read.csv("spring_5_29_25.csv")
-summer <- read.csv("summer_5_29_25.csv")
+spring <- read.csv("raw_data/spring_5_29_25.csv")
+summer <- read.csv("raw_data/summer_5_29_25.csv")
 
 ######## Clean Data ########################
 ## might be already cleaned but check just in case 

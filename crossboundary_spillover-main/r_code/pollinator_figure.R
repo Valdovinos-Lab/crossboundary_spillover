@@ -1,7 +1,7 @@
 ######## Pollinator Figure Code ######
 ######## updated version for newer MATLAB code ##############
 ###### date created: 3-17-2025 ###########
-######### date last modified: 11-7-2025 #######
+######### date last modified: 1-8-2026 #######
 ###### create pollinator figure #######
 
 source("rcode/updated_analysis.R")
@@ -118,4 +118,4 @@ fig_1_final <- (p1 + p2 + p3) /
 fig_1_final
 
 # Save as high-resolution PDF
-ggsave("pollinator_figure.pdf", fig_1_final, width = 14, height = 8, dpi = 600)
+ggsave("pollinator_figure_newmodel.pdf", fig_1_final, width = 14, height = 8, dpi = 600)
