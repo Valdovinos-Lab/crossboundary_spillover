@@ -28,11 +28,21 @@
 % % Create full-sized arrays with NaN for absent species
  % plants_full_size = nan(sum(plant_masks{1}), 1);
  % plants_full_size(serp_plant_mask) = P_results{sim, 2};
-%
+
+ %%% Acccessing Q and D 
+ %Q_sim5_serp = Q_results{5, 2}
+%D_sim5_serp = D_results{5, 2}
+
+%%% updated on 1-12-26 for new K version of model 
 
 %%%%%%%%%%%%%%% Export simulation data for subsequent analysis in R
 %%%%%%%%%%%%%%% %%%%%%%%%%%%%%%%%%%%%
 %% ---------------- Setup ----------------
+network_dir = 'input_networks';
+network_structs = dir(fullfile(network_dir, '*.csv'));
+networks = fullfile({network_structs.folder}, {network_structs.name});
+
+
 data_dir = './simulation_results';
 matFiles = dir(fullfile(data_dir, '*_all_versions.mat'));
 
@@ -46,20 +56,29 @@ for f = 1:length(matFiles)
     fileName = matFiles(f).name;
     load(fullfile(data_dir, fileName));
     [~, baseName, ~] = fileparts(fileName);  % dataset name
+    tbl = readtable(networks{f}, 'ReadRowNames', true);  % read in names of empirical species
+    plant_names  = tbl.Properties.RowNames;              
+    animal_names = tbl.Properties.VariableNames;       
+
+   % versionNames = string(version_names); %% get version name from file 
+   % nVersions    = numel(versionNames);
     
     nSim = size(P_results, 1);  % number of simulations
     
     %% ---------------- Loop over all simulations and versions ----------------
     for sim = 1:nSim
-        for version = 1:3
+        for version = 1:3 %could also code as 1:nVersions
             
             %% ---------------- Plant Outputs ----------------
             plant_mask = plant_masks{version};
+            full_ids = find(plant_mask); 
             np_version = sum(plant_mask);
             
             % Preallocate with NaN
             P_vec = nan(np_version,1);
-            Gamma_vec = nan(np_version,1);
+            Q_vec = nan(np_version,1); %quality of pollination services
+            D_vec = nan(np_version,1); % effective density 
+           % Gamma_vec = nan(np_version,1); no longer there
             Seeds_vec = nan(np_version,1);
             PolServ_vec = nan(np_version,1);
             MeanSigmaP_vec = nan(np_version,1);
@@ -67,30 +86,66 @@ for f = 1:length(matFiles)
             VisitsP_total_vec = nan(np_version,1);
             
             % Fill in present species
-            P_vec(1:length(P_results{sim,version})) = P_results{sim,version};
-            Gamma_vec(1:length(Gamma_results{sim,version})) = Gamma_results{sim,version};
-            Seeds_vec(1:length(SeedProduced_results{sim,version})) = SeedProduced_results{sim,version};
-            PolServ_vec(1:length(sPolServ_perP_results{sim,version})) = sPolServ_perP_results{sim,version};
-            MeanSigmaP_vec(1:length(meansigma_perP_results{sim,version})) = meansigma_perP_results{sim,version};
-            VisitsP_percap_vec(1:length(sVisits_perP_results{sim,version})) = sVisits_perP_results{sim,version};
-            VisitsP_total_vec(1:length(sVisitsP_results{sim,version})) = sVisitsP_results{sim,version};
+            n_present = length(P_results{sim,version});  
+            P_vec(1:n_present) = P_results{sim,version};
+            Q_vec(1:n_present) = Q_results{sim,version}(1:n_present);
+            D_vec(1:n_present) = D_results{sim,version}(1:n_present);
+            Seeds_vec(1:n_present) = SeedProduced_results{sim,version};
+            PolServ_vec(1:n_present) = sPolServ_perP_results{sim,version};
+            MeanSigmaP_vec(1:n_present) = meansigma_perP_results{sim,version};
+            VisitsP_percap_vec(1:n_present) = sVisits_perP_results{sim,version};
+            VisitsP_total_vec(1:n_present) = sVisitsP_results{sim,version};
+
+
+
+           % P_vec(1:length(P_results{sim,version})) = P_results{sim,version};
+
+    
+            %n = min(np_version, numel(Q_results{sim,version}));
+            %Q_vec(1:n) = Q_results{sim,version}(1:n);
+
+            %n = min(np_version, numel(D_results{sim,version}));
+            %D_vec(1:n) = D_results{sim,version}(1:n);
+          
+            % Q_vec(1:length(Q_results{sim,version})) = Q_results{sim,version};
+           % D_vec(1:length(D_results{sim,version})) = D_results{sim,version};
+            % Gamma_vec(1:length(Gamma_results{sim,version})) = Gamma_results{sim,version};
+            %Seeds_vec(1:length(SeedProduced_results{sim,version})) = SeedProduced_results{sim,version};
+            %PolServ_vec(1:length(sPolServ_perP_results{sim,version})) = sPolServ_perP_results{sim,version};
+           % MeanSigmaP_vec(1:length(meansigma_perP_results{sim,version})) = meansigma_perP_results{sim,version};
+            %VisitsP_percap_vec(1:length(sVisits_perP_results{sim,version})) = sVisits_perP_results{sim,version};
+           % VisitsP_total_vec(1:length(sVisitsP_results{sim,version})) = sVisitsP_results{sim,version};
             
             % Creates table
-            plantData = table((1:np_version)', P_vec, Gamma_vec, Seeds_vec, ...
+            plantData = table((1:np_version)', P_vec, Q_vec, D_vec, Seeds_vec, ...
                               PolServ_vec, MeanSigmaP_vec, VisitsP_percap_vec, VisitsP_total_vec, ...
-                              'VariableNames', {'Plant_ID','P','Gamma','Seeds','PolServ','MeanSigmaP','VisitsP_percap','VisitsP_total'});
+                              'VariableNames', {'Plant_ID','P','Q','D', 'Seeds','PolServ','MeanSigmaP','VisitsP_percap','VisitsP_total'});
             
             % Metadata
-            plantData.Plant_FullID = find(plant_mask);
-            plantData.Simulation   = repmat(sim, np_version, 1);
-            plantData.Version      = repmat(version, np_version, 1);
-            plantData.VersionName  = repmat(string(versionNames{version}), np_version, 1);
-            plantData.Dataset      = repmat(string(baseName), np_version, 1);
+            %plantData.Plant_FullID = find(plant_mask);
+           % plantData.Plant_FullID = full_ids;                
+           % plantData.PlantName   = string(plant_names(full_ids)); 
+           % plantData.Simulation   = repmat(sim, np_version, 1);
+           % plantData.Version      = repmat(version, np_version, 1);
+           % plantData.VersionName  = repmat(string(versionNames{version}), np_version, 1);
+           % plantData.Dataset      = repmat(string(baseName), np_version, 1);
+
+        plantData.Plant_FullID = nan(np_version,1);      
+        plantData.PlantName   = strings(np_version,1);    
+        plantData.Simulation  = repmat(sim, np_version, 1);
+        plantData.Version     = repmat(version, np_version, 1);
+        plantData.VersionName = repmat(string(versionNames{version}), np_version, 1);
+        plantData.Dataset     = repmat(string(baseName), np_version, 1);
+
+        plantData.Plant_FullID(1:n_present) = full_ids(1:n_present);   
+        plantData.PlantName(1:n_present)   = string(plant_names(full_ids(1:n_present)));
+
             
             allPlantData = [allPlantData; plantData];
             
             %% ---------------- Animal Outputs ----------------
             animal_mask = animal_masks{version};
+            full_ids = find(animal_mask);   
             na_version = sum(animal_mask);
             
             % Preallocate with NaN
@@ -101,27 +156,53 @@ for f = 1:length(matFiles)
             VisitsA_total_vec = nan(na_version,1);
             
             % Fill in present species
-            A_vec(1:length(A_results{sim,version})) = A_results{sim,version};
-            N_extract_vec(1:length(sN_extractj_perA_results{sim,version})) = sN_extractj_perA_results{sim,version};
-            MeanSigmaA_vec(1:length(meansigma_perA_results{sim,version})) = meansigma_perA_results{sim,version};
-            VisitsA_percap_vec(1:length(sVisits_perA_results{sim,version})) = sVisits_perA_results{sim,version};
-            VisitsA_total_vec(1:length(sVisitsA_results{sim,version})) = sVisitsA_results{sim,version};
+            n_present = length(A_results{sim,version});
+            A_vec(1:n_present) = A_results{sim,version};
+            N_extract_vec(1:n_present) = sN_extractj_perA_results{sim,version};
+            MeanSigmaA_vec(1:n_present) = meansigma_perA_results{sim,version};
+            VisitsA_percap_vec(1:n_present) = sVisits_perA_results{sim,version};
+            VisitsA_total_vec(1:n_present) = sVisitsA_results{sim,version};
+
+
+            %A_vec(1:length(A_results{sim,version})) = A_results{sim,version};
+            %N_extract_vec(1:length(sN_extractj_perA_results{sim,version})) = sN_extractj_perA_results{sim,version};
+            %MeanSigmaA_vec(1:length(meansigma_perA_results{sim,version})) = meansigma_perA_results{sim,version};
+            %VisitsA_percap_vec(1:length(sVisits_perA_results{sim,version})) = sVisits_perA_results{sim,version};
+            %VisitsA_total_vec(1:length(sVisitsA_results{sim,version})) = sVisitsA_results{sim,version};
             
             % Create table
             animalData = table((1:na_version)', A_vec, N_extract_vec, MeanSigmaA_vec, VisitsA_percap_vec, VisitsA_total_vec, ...
                                'VariableNames', {'Animal_ID','A','N_extract','MeanSigmaA','VisitsA_percap','VisitsA_total'});
             
             % Metadata
-            animalData.Animal_FullID = find(animal_mask);
-            animalData.Simulation   = repmat(sim, na_version, 1);
-            animalData.Version      = repmat(version, na_version, 1);
-            animalData.VersionName  = repmat(string(versionNames{version}), na_version, 1);
-            animalData.Dataset      = repmat(string(baseName), na_version, 1);
+            %animalData.Animal_FullID = find(animal_mask);
+           % animalData.Animal_FullID = full_ids;                 
+            %animalData.AnimalName   = string(animal_names(full_ids)); 
+            %animalData.Simulation   = repmat(sim, na_version, 1);
+            %animalData.Version      = repmat(version, na_version, 1);
+            %animalData.VersionName  = repmat(string(versionNames{version}), na_version, 1);
+            %animalData.Dataset      = repmat(string(baseName), na_version, 1);
+  
+
+        animalData.Animal_FullID = nan(na_version,1);
+        animalData.AnimalName   = strings(na_version,1);
+        animalData.Simulation   = repmat(sim, na_version, 1);
+        animalData.Version      = repmat(version, na_version, 1);
+        animalData.VersionName  = repmat(string(versionNames{version}), na_version, 1);
+        animalData.Dataset      = repmat(string(baseName), na_version, 1);
+        animalData.Animal_FullID(1:n_present) = full_ids(1:n_present);
+        animalData.AnimalName(1:n_present)   = string(animal_names(full_ids(1:n_present)));
+
             
             allAnimalData = [allAnimalData; animalData];
         end
     end
 end
+
+% to check 
+disp(plantData(:, {'Plant_ID','Plant_FullID','PlantName','P'}));
+disp(animalData(:, {'Animal_ID','Animal_FullID','AnimalName','A'}));
+
 
 %% ---------------- Save as a CSV for use in R ----------------
 writetable(allPlantData, 'Plants_AllMetrics.csv'); %all plant outputs for all sites, simulations and versions
